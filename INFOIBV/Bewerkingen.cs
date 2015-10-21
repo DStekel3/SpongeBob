@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace INFOIBV
 {
@@ -16,7 +12,7 @@ namespace INFOIBV
             int width = c.GetLength(0);
             int height = c.GetLength(1);
 
-            double[,] pixels = new double[width, height];
+            double[,] d = new double[width, height];
 
 
             for (int x = 0; x < width; x++)
@@ -31,10 +27,10 @@ namespace INFOIBV
                     else
                         avg = 0;
 
-                    pixels[x, y] = avg;
+                    d[x, y] = avg;
                 }
             }
-            return pixels;
+            return d;
         }
 
         public Color[,] ToColorArray(double[,] d)
@@ -54,5 +50,9 @@ namespace INFOIBV
 
             return c;
         }
+
+
+
+
     }
 }

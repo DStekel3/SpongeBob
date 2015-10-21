@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace INFOIBV
 {
@@ -64,7 +62,13 @@ namespace INFOIBV
             //==========================================================================================
             // TODO: include here your own code
             Bewerkingen b = new Bewerkingen();
+
             double[,] grey = b.ToGray(Image);
+
+
+
+
+
 
             Image = b.ToColorArray(grey);
             
