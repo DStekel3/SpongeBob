@@ -3,56 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace INFOIBV
 {
-    class Bewerkingen
+    public class Bewerkingen
     {
-        public Bewerkingen() { }
-
-        public double[,] ToGray(Color[,] c)
+        public double[,] GrayValues(Color[,] pic)
         {
+            double[,] result = new double[pic.GetLength(0), pic.GetLength(1)];
 
-            int width = c.GetLength(0);
-            int height = c.GetLength(1);
-
-            double[,] pixels = new double[width, height];
-
-
-            for (int x = 0; x < width; x++)
+            //DO YOUR STUFF
+            Parallel.For(0, pic.GetLength(1), y =>
             {
-                for (int y = 0; y < height; y++)
-                {
-                    Color pixelColor = c[x, y];
-                    int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                Parallel.For(0, pic.GetLength(0), x =>
+    {
 
-                    if (avg > 130)
-                        avg = 255;
-                    else
-                        avg = 0;
 
-                    pixels[x, y] = avg;
-                }
-            }
-            return pixels;
-        }
-
-        public Color[,] ToColorArray(double[,] d)
-        {
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-            Color[,] c = new Color[width, height];
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Color newColor = Color.FromArgb((int)d[x, y], (int)d[x, y], (int)d[x, y]);
-                    c[x, y] = newColor;
-                }
-            }
-
-            return c;
-        }
     }
 }
