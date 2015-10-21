@@ -5,7 +5,7 @@ namespace INFOIBV
     class Bewerkingen
     {
         public Bewerkingen() { }
-
+        // Testje
         public double[,] ToGray(Color[,] c)
         {
 

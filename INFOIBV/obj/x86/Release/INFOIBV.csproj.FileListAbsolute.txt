@@ -31,3 +31,5 @@ C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.Properti
 C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache
 C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.exe
 C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.pdb
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.exe
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.pdb
