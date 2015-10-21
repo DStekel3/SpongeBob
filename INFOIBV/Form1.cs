@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace INFOIBV
 {
@@ -65,6 +66,7 @@ namespace INFOIBV
             // example: create a negative image
             Color[,] Image2 = new Color[InputImage.Size.Width, InputImage.Size.Height];
 
+            
             for (int x = 0; x < InputImage.Size.Width; x++)
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
@@ -91,24 +93,6 @@ namespace INFOIBV
                 }
             }
 
-
-
-
-            for (int x = 1; x < InputImage.Size.Width-1; x++)
-            {
-                for (int y = 1; y < InputImage.Size.Height-1; y++)
-                {
-                    if((Image[x,y] == Color.FromArgb(0,0,0)) &&( Image[x-1, y] == Color.FromArgb(0,0,0)) &&( Image[x+1, y] == Color.FromArgb(0,0,0)))
-                    {
-                        Image2[x, y] = Color.FromArgb(0, 0, 0);
-                    }
-                    
-
-                }
-            }
-            Image = Image2;
-
-
                     //==========================================================================================
 
                     // Copy array to output Bitmap
@@ -130,8 +114,6 @@ namespace INFOIBV
             if (saveImageDialog.ShowDialog() == DialogResult.OK)
                 OutputImage.Save(saveImageDialog.FileName);                 // Save the output image
         }
-
-
 
     }
 }
