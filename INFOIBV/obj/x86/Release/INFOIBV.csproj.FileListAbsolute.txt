@@ -15,3 +15,5 @@ C:\Users\Daan\Desktop\Visual Studio\INFOIBV\obj\x86\Release\INFOIBV.Properties.R
 C:\Users\Daan\Desktop\Visual Studio\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache
 C:\Users\Daan\Desktop\Visual Studio\INFOIBV\obj\x86\Release\INFOIBV.exe
 C:\Users\Daan\Desktop\Visual Studio\INFOIBV\obj\x86\Release\INFOIBV.pdb
+C:\Users\Daan\Desktop\Visual Studio\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.exe
+C:\Users\Daan\Desktop\Visual Studio\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.pdb
