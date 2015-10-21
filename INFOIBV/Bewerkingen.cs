@@ -3,42 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using System.Threading.Tasks;
 
 namespace INFOIBV
 {
-    public class Bewerkingen
+    class Bewerkingen
     {
-        public double[,] GrayValues(Color[,] pic)
-        {
-            double[,] result = new double[pic.GetLength(0), pic.GetLength(1)];
+        public Bewerkingen() { }
 
-            //DO YOUR STUFF
-            Parallel.For(0, pic.GetLength(1), y =>
+        public double[,] ToGray(Color[,] c)
+        {
+
+            int width = c.GetLength(0);
+            int height = c.GetLength(1);
+
+            double[,] pixels = new double[width, height];
+
+
+            for (int x = 0; x < width; x++)
             {
-                Parallel.For(0, pic.GetLength(0), x =>
+                for (int y = 0; y < height; y++)
                 {
-                    result[x, y] = (pic[x, y].R + pic[x, y].G + pic[x, y].B) / 3;
-                });
+                    Color pixelColor = c[x, y];
+                    int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+
+                    if (avg > 130)
+                        avg = 255;
+                    else
+                        avg = 0;
+
+                    pixels[x, y] = avg;
+                }
             }
-            );
-            return result;
+            return pixels;
         }
 
-        public Color[,] ToResult(double[,] pic)
+        public Color[,] ToColorArray(double[,] d)
         {
-            Color[,] result = new Color[pic.GetLength(0), pic.GetLength(1)];
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+            Color[,] c = new Color[width, height];
 
-            //DO YOUR STUFF
-            Parallel.For(0, pic.GetLength(1), y =>
+            for (int x = 0; x < width; x++)
             {
-                Parallel.For(0, pic.GetLength(0), x =>
+                for (int y = 0; y < height; y++)
                 {
-                    result[x, y] = Color.FromArgb((int)pic[x, y], (int)pic[x, y], (int)pic[x, y]);
-                });
+                    Color newColor = Color.FromArgb((int)d[x, y], (int)d[x, y], (int)d[x, y]);
+                    c[x, y] = newColor;
+                }
             }
-            );
-            return result;
+
+            return c;
         }
     }
 }

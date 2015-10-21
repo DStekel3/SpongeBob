@@ -63,44 +63,14 @@ namespace INFOIBV
 
             //==========================================================================================
             // TODO: include here your own code
-            // example: create a negative image
             Bewerkingen b = new Bewerkingen();
-            Color[,] Image2 = new Color[InputImage.Size.Width, InputImage.Size.Height];
+            double[,] grey = b.ToGray(Image);
 
-            double[,] GreyVal = b.GrayValues(Image);
-            Image = b.ToResult(GreyVal);
-            /*
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
+            Image = b.ToColorArray(grey);
+            
+            //==========================================================================================
 
-                    Image2[x, y] = Color.FromArgb(255, 255,255);
-                    //Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
-                    //Color updatedColor = Color.FromArgb(255 - pixelColor.R, 255 - pixelColor.G, 255 - pixelColor.B); // Negative image
-                    //Image[x, y] = updatedColor;                             // Set the new pixel color at coordinate (x,y)
-                    //progressBar.PerformStep();                              // Increment progress bar
-
-                    Color pixelColor = Image[x, y];
-                    int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
-                    
-                    if (avg > 130)
-                        avg = 255;
-                    else
-                        avg = 0;
-
-                    Color updatedColor = Color.FromArgb(avg, avg, avg);
-
-                    Image[x, y] = updatedColor;
-                    
-                    progressBar.PerformStep();
-                }
-            }*/
-
-
-                    //==========================================================================================
-
-                    // Copy array to output Bitmap
+            // Copy array to output Bitmap
             for (int x = 0; x < InputImage.Size.Width; x++)
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
