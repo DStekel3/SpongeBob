@@ -70,7 +70,7 @@ namespace INFOIBV
 
 
 
-            Image = b.ToColorArray(grey);
+            Image = b.ToColor(grey);
             
             //==========================================================================================
 

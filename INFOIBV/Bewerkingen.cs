@@ -33,7 +33,7 @@ namespace INFOIBV
             return d;
         }
 
-        public Color[,] ToColorArray(double[,] d)
+        public Color[,] ToColor(double[,] d)
         {
             int width = d.GetLength(0);
             int height = d.GetLength(1);
