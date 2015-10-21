@@ -64,13 +64,17 @@ namespace INFOIBV
             //==========================================================================================
             // TODO: include here your own code
             // example: create a negative image
+            Bewerkingen b = new Bewerkingen();
             Color[,] Image2 = new Color[InputImage.Size.Width, InputImage.Size.Height];
 
-            
+            double[,] GreyVal = b.GrayValues(Image);
+            Image = b.ToResult(GreyVal);
+            /*
             for (int x = 0; x < InputImage.Size.Width; x++)
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
                 {
+
                     Image2[x, y] = Color.FromArgb(255, 255,255);
                     //Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
                     //Color updatedColor = Color.FromArgb(255 - pixelColor.R, 255 - pixelColor.G, 255 - pixelColor.B); // Negative image
@@ -91,7 +95,8 @@ namespace INFOIBV
                     
                     progressBar.PerformStep();
                 }
-            }
+            }*/
+
 
                     //==========================================================================================
 

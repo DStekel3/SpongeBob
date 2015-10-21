@@ -7,3 +7,10 @@ D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\GenerateResource.rea
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\GenerateResource.write.1.tlog
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\INFOIBV.exe
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\INFOIBV.pdb
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\INFOIBV.exe
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\INFOIBV.pdb
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.INFOIBV.resources
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.Properties.Resources.resources
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
+C:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
