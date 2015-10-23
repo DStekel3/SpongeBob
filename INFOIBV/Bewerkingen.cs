@@ -22,7 +22,7 @@ namespace INFOIBV
                     Color pixelColor = c[x, y];
                     int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
 
-                    if (avg > 130)
+                    if (avg > 140)
                         avg = 255;
                     else
                         avg = 0;
@@ -51,8 +51,38 @@ namespace INFOIBV
             return c;
         }
 
+        public double[,] Dilation(double[,] d)
+        {
+            //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
+            double[,] output = d;
 
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
 
+            for (int x = 1; x < width-1; x++)
+            {
+                for (int y = 1; y < height-1; y++)
+                {
+                    double totaal = 0;
+                                                        //Kernel 3x3
+                    for(int i = -1; i < 2; i++)
+                    {
+                        for(int j = -1; j<2; j++)
+                        {
+                            totaal += d[x + i, y + j];
+                        }
+                    }
+
+                    if (totaal/9 > 140)
+                        output[x, y] = 255;
+                    else
+                        output[x, y] = 0;
+                }
+            }
+
+            return output;
+        }
+        
     }
 }
