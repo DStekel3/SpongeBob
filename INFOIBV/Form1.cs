@@ -67,7 +67,7 @@ namespace INFOIBV
 
 
             grey = b.Dilation(grey);
-
+           
 
 
             Image = b.ToColor(grey);

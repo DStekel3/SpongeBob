@@ -57,6 +57,7 @@ namespace INFOIBV
 
             double[,] output = new double[d.GetLength(0),d.GetLength(1)];
 
+
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
@@ -64,26 +65,60 @@ namespace INFOIBV
             {
                 for (int y = 1; y < height-1; y++)
                 {
-                    int totaal = 0;
-                                                        //Kernel 3x3
+                    int totaal = 0;                           
+                    //Kernel 3x3
                     for(int i = -1; i < 2; i++)
                     {
                         for(int j = -1; j<2; j++)
                         {
-                            if (d[x + i, y + j] < 140)
+                            if (d[x + i, y + j] == 0)
                                 totaal++;
                         }
                     }
 
-                    if (totaal>8)
+                    if (totaal >= 7)
                         output[x, y] = 0;
                     else
-                        output[x, y] = 255;
+                        output[x, y] = d[x, y];
                 }
             }
 
             return output;
         }
-        
+
+
+        public double[,] Erosion(double[,] d)
+        {
+            //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
+
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            for (int x = 1; x < width - 1; x++)
+            {
+                for (int y = 1; y < height - 1; y++)
+                {
+                    int totaal = 0;
+                    //Kernel 3x3
+                    for (int i = -1; i < 2; i++)
+                    {
+                        for (int j = -1; j < 2; j++)
+                        {
+                            if (d[x + i, y + j] == 0)
+                                totaal++;
+                        }
+                    }
+
+                    if (totaal < 8)
+                        output[x, y] = 255;
+
+                }
+            }
+
+            return output;
+        }
+
     }
 }
