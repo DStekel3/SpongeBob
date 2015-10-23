@@ -55,7 +55,7 @@ namespace INFOIBV
         {
             //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
-            double[,] output = d;
+            double[,] output = new double[d.GetLength(0),d.GetLength(1)];
 
             int width = d.GetLength(0);
             int height = d.GetLength(1);
@@ -64,20 +64,21 @@ namespace INFOIBV
             {
                 for (int y = 1; y < height-1; y++)
                 {
-                    double totaal = 0;
+                    int totaal = 0;
                                                         //Kernel 3x3
                     for(int i = -1; i < 2; i++)
                     {
                         for(int j = -1; j<2; j++)
                         {
-                            totaal += d[x + i, y + j];
+                            if (d[x + i, y + j] < 140)
+                                totaal++;
                         }
                     }
 
-                    if (totaal/9 > 140)
-                        output[x, y] = 255;
-                    else
+                    if (totaal>8)
                         output[x, y] = 0;
+                    else
+                        output[x, y] = 255;
                 }
             }
 
