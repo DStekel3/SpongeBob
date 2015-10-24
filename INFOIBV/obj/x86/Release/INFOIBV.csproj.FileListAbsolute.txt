@@ -41,3 +41,11 @@ D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csprojResolveAssem
 D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.INFOIBV.resources
 D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.Properties.Resources.resources
 D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.exe
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.pdb
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Release\INFOIBV.exe
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Release\INFOIBV.pdb
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csprojResolveAssemblyReference.cache
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.INFOIBV.resources
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.Properties.Resources.resources
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache
