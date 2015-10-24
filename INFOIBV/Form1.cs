@@ -64,7 +64,12 @@ namespace INFOIBV
             Bewerkingen b = new Bewerkingen();
 
             double[,] grey = b.ToGray(Image);
-            grey = b.Edge(grey);
+
+
+           grey = b.Edge(grey);
+
+           
+
             Image = b.ToColor(grey);
             //==========================================================================================
 

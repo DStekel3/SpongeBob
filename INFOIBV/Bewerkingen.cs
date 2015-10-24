@@ -77,7 +77,7 @@ namespace INFOIBV
                         }
                     }
 
-                    if (totaal >= 7)
+                    if (totaal >= 4)
                         output[x, y] = 0;
                     else
                         output[x, y] = d[x, y];
@@ -153,7 +153,19 @@ namespace INFOIBV
                 }
             }
 
-            return output;
+            for (int x = 1; x < width - 1; x++)
+            {
+                for (int y = 1; y < height - 1; y++)
+                {
+                    if (output[x, y] > 0)
+                        output[x, y] = d[x, y];
+                    else
+                        output[x, y] = 255;
+
+                }
+            }
+
+                    return output;
         }
 
     }
