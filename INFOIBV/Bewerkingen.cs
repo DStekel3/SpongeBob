@@ -9,15 +9,16 @@ namespace INFOIBV
         public object Paralell { get; private set; }
 
         public Bewerkingen() { }
-        // Testje
+
+
+
         public double[,] ToGray(Color[,] c)
         {
-
+            // Get the average value of each pixel
             int width = c.GetLength(0);
             int height = c.GetLength(1);
 
             double[,] d = new double[width, height];
-
 
             Parallel.For(0, width, x =>
             {
@@ -26,10 +27,9 @@ namespace INFOIBV
                     Color pixelColor = c[x, y];
                     int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
 
-                    if (avg > 140)
+                    if (avg > 255)
                         avg = 255;
-                    else
-                        avg = 0;
+                   
 
                     d[x, y] = avg;
                 });
@@ -37,8 +37,29 @@ namespace INFOIBV
             return d;
         }
 
+        public double[,] ToBinary(double[,] d, int th)
+        {
+            // Convert a greyscale image to a binary image depending on threshhold th
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            double[,] output = new double[width,height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for(int y = 0; y< height; y++)
+                {
+                    if (d[x, y] > th)
+                        output[x, y] = 255;
+                }
+            }
+            
+            return output;
+        }
+
         public Color[,] ToColor(double[,] d)
         {
+            // Convert a double array to a Color array so the Image can be displayed
             int width = d.GetLength(0);
             int height = d.GetLength(1);
             Color[,] c = new Color[width, height];
@@ -55,12 +76,10 @@ namespace INFOIBV
             return c;
         }
 
-        public double[,] Dilation(double[,] d, int amount)
+        public double[,] Dilation(double[,] d, int th, int amount)
         {
-            //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
-
+            // Dilate the double array depending on threshhold th, amount times
             double[,] output = new double[d.GetLength(0),d.GetLength(1)];
-
 
             int width = d.GetLength(0);
             int height = d.GetLength(1);
@@ -80,7 +99,7 @@ namespace INFOIBV
                         }
                     }
 
-                    if (totaal >= 4)
+                    if (totaal > th)
                         output[x, y] = 0;
                     else
                         output[x, y] = d[x, y];
@@ -88,15 +107,14 @@ namespace INFOIBV
             }
 
             if (amount > 1)
-                output = Dilation(output, amount - 1);
+                output = Dilation(output, th, amount - 1);
             return output;
         }
 
 
-        public double[,] Erosion(double[,] d, int amount)
+        public double[,] Erosion(double[,] d, int th, int amount)
         {
-            //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
-
+            // Erode the double array depending on threshhold th, amount times
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
@@ -117,18 +135,19 @@ namespace INFOIBV
                         }
                     }
 
-                    if (totaal < 8)
+                    if (totaal < th)
                         output[x, y] = 255;
 
                 }
             }
             if (amount > 1)
-                output = Erosion(output, amount-1);
+                output = Erosion(output, th, amount-1);
             return output;
         }
 
         public double[,] Edge(double[,] d)
         {
+            // Get the edges
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
