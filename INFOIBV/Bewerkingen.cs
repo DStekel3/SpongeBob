@@ -123,7 +123,7 @@ namespace INFOIBV
                 }
             }
             if (amount > 1)
-                output = Erosion(output, amount);
+                output = Erosion(output, amount-1);
             return output;
         }
 
