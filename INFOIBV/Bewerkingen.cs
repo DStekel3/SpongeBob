@@ -55,7 +55,7 @@ namespace INFOIBV
             return c;
         }
 
-        public double[,] Dilation(double[,] d)
+        public double[,] Dilation(double[,] d, int amount)
         {
             //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
@@ -87,11 +87,13 @@ namespace INFOIBV
                 }
             }
 
+            if (amount > 1)
+                output = Dilation(output, amount - 1);
             return output;
         }
 
 
-        public double[,] Erosion(double[,] d)
+        public double[,] Erosion(double[,] d, int amount)
         {
             //  double[,] kernel = { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } };
 
@@ -120,7 +122,8 @@ namespace INFOIBV
 
                 }
             }
-
+            if (amount > 1)
+                output = Erosion(output, amount);
             return output;
         }
 
