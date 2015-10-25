@@ -65,8 +65,7 @@ namespace INFOIBV
 
             double[,] grey = b.ToGray(Image);
             grey = b.Edge(grey);
-            grey = b.Dilation(grey, 1);
-
+            
             Image = b.ToColor(grey);
             //==========================================================================================
 

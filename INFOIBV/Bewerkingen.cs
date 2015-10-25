@@ -162,6 +162,54 @@ namespace INFOIBV
                     return output;
         }
 
+        public double[,] Subtract(double[,] a, double[,]b)
+        {
+            // when images have on position (x,y) both a black pixel, this will become white
+            // the other pixels will stay the same as in image a.
+            double[,] result = new double[a.GetLength(0), a.GetLength(1)];
+            Parallel.For(0, a.GetLength(1), y =>
+            {
+                Parallel.For(0, a.GetLength(0), x =>
+                {
+                    if (a[x, y] == 0 && b[x, y] == 0)
+                        result[x, y] = 255;
+                    else
+                        result[x, y] = a[x,y];
+                });
+            });
+            return result;
+        }
 
+        public double[,] Add(double[,] a, double[,] b)
+        {
+            // when at least one of the images has a black pixel on (x,y), this will become black,
+            // the other pixels will stay white.
+            double[,] result = new double[a.GetLength(0), a.GetLength(1)];
+            Parallel.For(0, a.GetLength(1), y =>
+            {
+                Parallel.For(0, a.GetLength(0), x =>
+                {
+                    if (a[x, y] == 0 || b[x, y] == 0)
+                        result[x, y] = 0;
+                    else
+                        result[x, y] = 255;
+                });
+            });
+            return result;
+        }
+
+        public double[,] Inverse(double[,] d)
+        {
+            // calculates the inverse of given image
+            double[,] result = new double[d.GetLength(0), d.GetLength(1)];
+            Parallel.For(0, d.GetLength(1), y =>
+            {
+                Parallel.For(0, d.GetLength(0), x =>
+                {
+                    result[x, y] = 255 - d[x, y];
+                });
+            });
+            return result;
+        }
     }
 }

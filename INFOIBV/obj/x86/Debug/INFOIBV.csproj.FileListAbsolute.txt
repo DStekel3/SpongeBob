@@ -21,3 +21,4 @@ D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.Properties
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
+D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
