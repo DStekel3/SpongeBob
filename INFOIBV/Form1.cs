@@ -65,11 +65,14 @@ namespace INFOIBV
 
             double[,] grey = b.ToGray(Image);
 
-           grey = b.ToBinary(grey, 140);
-           grey = b.Dilation(grey, 4, 10);
-           grey = b.Erosion(grey, 5, 10);
+            grey = b.Sharp(grey);
 
-            grey = b.Edge(grey);
+              grey = b.ToBinary(grey, 130);
+            //  grey = b.Dilation(grey, 4, 10);
+            //  grey = b.Erosion(grey, 5, 4);
+
+            //  grey = b.Edge(grey);
+
 
             Image = b.ToColor(grey);
             //==========================================================================================

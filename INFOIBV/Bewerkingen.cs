@@ -230,5 +230,68 @@ namespace INFOIBV
             });
             return result;
         }
+
+        public double[,] Smooth(double[,] d)
+        {
+            // Smooth
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            double[,] kernel = { { 1, 1, 1 }, { 1,1,1 }, { 1, 1, 1 } };
+
+            Parallel.For(1, width - 1, x =>
+            {
+                Parallel.For(1, height - 1, y =>
+                {
+                    double val = 0;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            val += ( kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 9;
+
+                        }
+                    }
+
+                    output[x, y] = val;
+                });
+            });
+            return output;
+        }
+
+        public double[,] Sharp(double[,] d)
+        {
+            // Smooth
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            double[,] kernel = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, 1, -1 } };
+
+            Parallel.For(1, width - 1, x =>
+            {
+                Parallel.For(1, height - 1, y =>
+                {
+                    double val = 0;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) ;
+
+                        }
+                    }
+
+                    output[x, y] = val;
+                });
+            });
+            return output;
+        }
+
     }
 }
