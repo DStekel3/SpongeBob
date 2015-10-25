@@ -64,11 +64,13 @@ namespace INFOIBV
             Bewerkingen b = new Bewerkingen();
 
             double[,] grey = b.ToGray(Image);
-            //for(int t =0;t<10;t++)
-            //    grey = b.Smoothing(grey);
-            grey = grey - b.Smoothing(grey);
+
+
+           grey = b.Edge(grey);
+
+           
+
             Image = b.ToColor(grey);
-            
             //==========================================================================================
 
             // Copy array to output Bitmap
