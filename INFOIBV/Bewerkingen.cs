@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace INFOIBV
 {
     class Bewerkingen
     {
+        public object Paralell { get; private set; }
+
         public Bewerkingen() { }
         // Testje
         public double[,] ToGray(Color[,] c)
@@ -16,9 +19,9 @@ namespace INFOIBV
             double[,] d = new double[width, height];
 
 
-            for (int x = 0; x < width; x++)
+            Parallel.For(0, width, x =>
             {
-                for (int y = 0; y < height; y++)
+                Parallel.For(0, height,y =>
                 {
                     Color pixelColor = c[x, y];
                     int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
@@ -29,8 +32,8 @@ namespace INFOIBV
                         avg = 0;
 
                     d[x, y] = avg;
-                }
-            }
+                });
+            });
             return d;
         }
 
@@ -131,42 +134,31 @@ namespace INFOIBV
             double[,] kernely = { { -1, -3, -1 }, { 0, 0, 0 }, { 1, 3, 1 } };
             double[,] kernelx = { { -1, 0, 1 }, { -3, 0, 3 }, { -1, 0, 1 } };
 
-            for (int x = 1; x < width - 1; x++)
-            {
-                for (int y = 1; y < height - 1; y++)
-                {
-                    double xval=0;
-                    double yval=0;
+            Parallel.For(1, width - 1, x =>
+           {
+               Parallel.For(1, height - 1, y =>
+               {
+                   double xval = 0;
+                   double yval = 0;
 
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            xval += kernelx[i, j] * d[-1 + i + x, -1 + j + y]/255;
-                            yval += kernely[i, j] * d[-1 + i + x, -1 + j + y]/255;
-                        }
-                    }
-                    double total = Math.Abs(xval) + Math.Abs(yval);
-                    
-                        output[x, y] = total;
-                    
-                }
-            }
-
-            for (int x = 1; x < width - 1; x++)
-            {
-                for (int y = 1; y < height - 1; y++)
-                {
-                    if (output[x, y] > 0)
-                        output[x, y] = d[x, y];
-                    else
-                        output[x, y] = 255;
-
-                }
-            }
-
+                   for (int i = 0; i < 3; i++)
+                   {
+                       for (int j = 0; j < 3; j++)
+                       {
+                           xval += kernelx[i, j] * d[-1 + i + x, -1 + j + y] / 255;
+                           yval += kernely[i, j] * d[-1 + i + x, -1 + j + y] / 255;
+                       }
+                   }
+                   double total = Math.Abs(xval) + Math.Abs(yval);
+                   if (total > 0)
+                       output[x, y] = d[x, y];
+                   else
+                       output[x, y] = 255;
+               });
+           });
                     return output;
         }
+
 
     }
 }
