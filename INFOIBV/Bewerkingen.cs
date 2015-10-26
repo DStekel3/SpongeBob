@@ -212,12 +212,12 @@ namespace INFOIBV
             Parallel.For(0, a.GetLength(1), y =>
             {
                 Parallel.For(0, a.GetLength(0), x =>
-                {
-                    if (a[x, y] == 0 && b[x, y] == 0)
-                        result[x, y] = 255;
-                    else
-                        result[x, y] = a[x,y];
-                });
+                  {
+                      if (a[x, y] == 0 && a[x, y] == b[x, y])
+                          result[x, y] = 255;
+                      else
+                          result[x, y] = a[x, y];
+                  });
             });
             return result;
         }
@@ -254,7 +254,7 @@ namespace INFOIBV
             return result;
         }
 
-        public double[,] Smooth(double[,] d)
+        public double[,] Smooth(double[,] d, int amount)
         {
             // Smooth
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
@@ -282,6 +282,8 @@ namespace INFOIBV
                     output[x, y] = val;
                 });
             });
+            if (amount > 1)
+                output = Smooth(output, amount - 1);
             return output;
         }
 
