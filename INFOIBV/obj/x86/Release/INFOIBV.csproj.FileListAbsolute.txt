@@ -57,3 +57,9 @@ D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csprojRe
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.INFOIBV.resources
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.Properties.Resources.resources
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\bin\Release\INFOIBV.exe
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\bin\Release\INFOIBV.pdb
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csprojResolveAssemblyReference.cache
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.INFOIBV.resources
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.Properties.Resources.resources
+C:\Users\Daniël\Documents\GitHub\SpongeBob\SpongeBob\INFOIBV\obj\x86\Release\INFOIBV.csproj.GenerateResource.Cache

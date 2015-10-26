@@ -76,6 +76,29 @@ namespace INFOIBV
             return c;
         }
 
+        public double[,] DoubleThresHold(double[,] d)
+        {
+            // Convert a greyscale image to a binary image depending on threshhold th
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            double lower = 150;
+            double upper = 200;
+
+            double[,] output = new double[width, height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (d[x, y] >= lower && d[x,y] <= upper)
+                        output[x, y] = 255;
+                }
+            }
+
+            return output;
+        }
+
         public double[,] Dilation(double[,] d, int th, int amount)
         {
             // Dilate the double array depending on threshhold th, amount times
