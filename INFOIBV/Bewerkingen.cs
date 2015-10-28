@@ -22,17 +22,18 @@ namespace INFOIBV
 
             Parallel.For(0, width, x =>
             {
-                Parallel.For(0, height,y =>
-                {
-                    Color pixelColor = c[x, y];
-                    int avg = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                Parallel.For(0, height, y =>
+                 {
+                     Color pixelColor = c[x, y];
+                     int avg = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.5 + pixelColor.B * 0.2);
+          //           int avg = (pixelColor.R + pixelColor.G + pixelColor.B)/3;
 
-                    if (avg > 255)
-                        avg = 255;
-                   
+                     if (avg > 255)
+                         avg = 255;
 
-                    d[x, y] = avg;
-                });
+
+                     d[x, y] = avg;
+                 });
             });
             return d;
         }
@@ -43,17 +44,17 @@ namespace INFOIBV
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
-            double[,] output = new double[width,height];
+            double[,] output = new double[width, height];
 
             for (int x = 0; x < width; x++)
             {
-                for(int y = 0; y< height; y++)
+                for (int y = 0; y < height; y++)
                 {
                     if (d[x, y] > th)
                         output[x, y] = 255;
                 }
             }
-            
+
             return output;
         }
 
@@ -76,14 +77,14 @@ namespace INFOIBV
             return c;
         }
 
-        public double[,] DoubleThresHold(double[,] d)
+        public double[,] DoubleThresHold(double[,] d, int l, int u)
         {
             // Convert a greyscale image to a binary image depending on threshhold th
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
-            double lower = 150;
-            double upper = 200;
+            double lower = l;
+            double upper = u;
 
             double[,] output = new double[width, height];
 
@@ -91,7 +92,7 @@ namespace INFOIBV
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (d[x, y] >= lower && d[x,y] <= upper)
+                    if (d[x, y] >= lower && d[x, y] <= upper)
                         output[x, y] = 255;
                 }
             }
@@ -102,27 +103,27 @@ namespace INFOIBV
         public double[,] Dilation(double[,] d, int th, int amount)
         {
             // Dilate the double array depending on threshhold th, amount times
-            double[,] output = new double[d.GetLength(0),d.GetLength(1)];
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
-            for (int x = 1; x < width-1; x++)
+            for (int x = 1; x < width - 1; x++)
             {
-                for (int y = 1; y < height-1; y++)
+                for (int y = 1; y < height - 1; y++)
                 {
-                    int totaal = 0;                           
+                    int totaal = 0;
                     //Kernel 3x3
-                    for(int i = -1; i < 2; i++)
+                    for (int i = -1; i < 2; i++)
                     {
-                        for(int j = -1; j<2; j++)
+                        for (int j = -1; j < 2; j++)
                         {
                             if (d[x + i, y + j] == 0)
                                 totaal++;
                         }
                     }
 
-                    if (totaal > th)
+                    if (totaal >=  th)
                         output[x, y] = 0;
                     else
                         output[x, y] = d[x, y];
@@ -147,7 +148,7 @@ namespace INFOIBV
             {
                 for (int y = 1; y < height - 1; y++)
                 {
-                    int totaal = 0;
+                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 0
                     //Kernel 3x3
                     for (int i = -1; i < 2; i++)
                     {
@@ -160,11 +161,14 @@ namespace INFOIBV
 
                     if (totaal < th)
                         output[x, y] = 255;
+                    else
+                        output[x, y] = d[x, y];
 
                 }
             }
             if (amount > 1)
-                output = Erosion(output, th, amount-1);
+                output = Erosion(output, th, amount - 1);
+
             return output;
         }
 
@@ -201,10 +205,10 @@ namespace INFOIBV
                        output[x, y] = 255;
                });
            });
-                    return output;
+            return output;
         }
 
-        public double[,] Subtract(double[,] a, double[,]b)
+        public double[,] Subtract(double[,] a, double[,] b)
         {
             // when images have on position (x,y) both a black pixel, this will become white
             // the other pixels will stay the same as in image a.
@@ -274,7 +278,7 @@ namespace INFOIBV
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            val += ( kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
+                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
 
                         }
                     }
@@ -307,7 +311,7 @@ namespace INFOIBV
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) ;
+                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]);
 
                         }
                     }
@@ -318,5 +322,26 @@ namespace INFOIBV
             return output;
         }
 
+        public double[,] Closing(double[,] d, int amount)
+        {
+            d = Dilation(d, 1, 1);
+            d = Erosion(d, 1, 1);
+            
+            if (amount > 1)
+                d = Closing(d, amount - 1);
+
+            return d;
+        }
+
+        public double[,] Opening(double[,] d, int amount)
+        {
+            d = Erosion(d, 1, 1);
+            d = Dilation(d, 1, 1);
+
+            if (amount > 1)
+                d = Opening(d, amount - 1);
+
+            return d;
+        }
     }
 }

@@ -64,19 +64,11 @@ namespace INFOIBV
             Bewerkingen bw = new Bewerkingen();
 
             double[,] a = bw.ToGray(Image);
-            a = bw.Smooth(a, 2);
-            a = bw.ToBinary(a,140);
-            a = bw.Dilation(a, 4, 2);
-            a = bw.Edge(a);
+            a = bw.Smooth(a, 3);
+            a = bw.ToBinary(a, 150);
+            //a = bw.Opening(a, 5);
+            a = bw.Erosion(a, 3, 5);
             Image = bw.ToColor(a);
-
-            //double[,] a = bw.ToGray(Image);
-            //a = bw.Smooth(a, 6);
-            //a = bw.ToBinary(a,140);
-            //double[,] b = bw.Erosion(a, 2, 2);
-            //a = bw.Dilation(a, 3, 1);
-            //a = bw.Subtract(b, a);
-            //Image = bw.ToColor(a);
             //==========================================================================================
 
             // Copy array to output Bitmap
