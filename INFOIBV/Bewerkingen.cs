@@ -262,7 +262,7 @@ namespace INFOIBV
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
-            double[,] kernel = { { 1, 1, 1 }, { 1,1,1 }, { 1, 1, 1 } };
+            double[,] kernel = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
             Parallel.For(1, width - 1, x =>
             {
@@ -274,7 +274,7 @@ namespace INFOIBV
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            val += ( kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 9;
+                            val += ( kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
 
                         }
                     }
