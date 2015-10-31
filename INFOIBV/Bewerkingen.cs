@@ -77,13 +77,24 @@ namespace INFOIBV
 
             for(int x = s.x; x<= s.x+s.w;x++)
             {
-                c[x, s.y] = Color.FromArgb(0, 255, 0);
-                c[x, s.y+s.h] = Color.FromArgb(0, 255, 0);
+                c[x, s.y-1] = Color.FromArgb(255, 0, 0);
+                c[x, s.y] = Color.FromArgb(255, 0, 0);
+                c[x, s.y +1] = Color.FromArgb(255, 0, 0);
+
+                c[x, s.y +s.h] = Color.FromArgb(255, 0, 0);
+                c[x, s.y + s.h - 1] = Color.FromArgb(255, 0, 0);
+                c[x, s.y] = Color.FromArgb(255, 0, 0);
+                c[x, s.y + s.h + 1] = Color.FromArgb(255, 0, 0);
             }
             for (int y = s.y; y <= s.y + s.h; y++)
             {
-                c[s.x, y] = Color.FromArgb(0, 255, 0);
-                c[s.x+s.w, y] = Color.FromArgb(0, 255, 0);
+                c[s.x-1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x, y] = Color.FromArgb(255, 0, 0);
+                c[s.x+1, y] = Color.FromArgb(255, 0, 0);
+
+                c[s.x + s.w-1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x+s.w, y] = Color.FromArgb(255, 0, 0);
+                c[s.x + s.w+1, y] = Color.FromArgb(255, 0, 0);
             }
 
             return c;
