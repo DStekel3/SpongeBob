@@ -75,26 +75,26 @@ namespace INFOIBV
                 }
             }
 
-            for(int x = s.x; x<= s.x+s.w;x++)
+            for (int x = s.x; x <= s.x + s.w; x++)
             {
-                c[x, s.y-1] = Color.FromArgb(255, 0, 0);
+                c[x, s.y - 1] = Color.FromArgb(255, 0, 0);
                 c[x, s.y] = Color.FromArgb(255, 0, 0);
-                c[x, s.y +1] = Color.FromArgb(255, 0, 0);
+                c[x, s.y + 1] = Color.FromArgb(255, 0, 0);
 
-                c[x, s.y +s.h] = Color.FromArgb(255, 0, 0);
+                c[x, s.y + s.h] = Color.FromArgb(255, 0, 0);
                 c[x, s.y + s.h - 1] = Color.FromArgb(255, 0, 0);
                 c[x, s.y] = Color.FromArgb(255, 0, 0);
                 c[x, s.y + s.h + 1] = Color.FromArgb(255, 0, 0);
             }
             for (int y = s.y; y <= s.y + s.h; y++)
             {
-                c[s.x-1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x - 1, y] = Color.FromArgb(255, 0, 0);
                 c[s.x, y] = Color.FromArgb(255, 0, 0);
-                c[s.x+1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x + 1, y] = Color.FromArgb(255, 0, 0);
 
-                c[s.x + s.w-1, y] = Color.FromArgb(255, 0, 0);
-                c[s.x+s.w, y] = Color.FromArgb(255, 0, 0);
-                c[s.x + s.w+1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x + s.w - 1, y] = Color.FromArgb(255, 0, 0);
+                c[s.x + s.w, y] = Color.FromArgb(255, 0, 0);
+                c[s.x + s.w + 1, y] = Color.FromArgb(255, 0, 0);
             }
 
             return c;
@@ -278,7 +278,7 @@ namespace INFOIBV
                    }
                    double total = Math.Abs(xval) + Math.Abs(yval);
                    if (total > 0)
-                       output[x, y] = 255;
+                       output[x, y] = d[x,y];
                    else
                        output[x, y] = 0;
                });
@@ -340,18 +340,21 @@ namespace INFOIBV
         {
             // Smooth
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
-
+            for(int t =0;t<d.GetLength(0); t++)
+            {
+                for (int u = 0; u < d.GetLength(1); u++)
+                    output[t, u] = 255;
+            }
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
             double[,] kernel = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
-            Parallel.For(1, width - 1, x =>
+            Parallel.For(1, width-1, x =>
             {
-                Parallel.For(1, height - 1, y =>
+                Parallel.For(1, height-1, y =>
                 {
                     double val = 0;
-
                     for (int i = 0; i < 3; i++)
                     {
                         for (int j = 0; j < 3; j++)
@@ -411,7 +414,7 @@ namespace INFOIBV
             return d;
         }
 
-        public Score FindSquares(double[,]d)
+        public Score FindSquares(double[,] d)
         {
             Score s = SquareTest(d);
             return s;
@@ -422,7 +425,7 @@ namespace INFOIBV
             int w = z.GetLength(0);
             int h = z.GetLength(1);
 
-            Score best = new Score(-1,-1,-1,-1,-1);
+            Score best = new Score(-1, -1, -1, -1, -1);
 
             for (int x = 0; x < w; x++)
             {
@@ -438,7 +441,7 @@ namespace INFOIBV
                             Score s = GetScoreSquare(z, x, y, width, height, 0.0);
                             if (s == null)
                                 break;
-                            else if(s.score > 40 && s.score > best.score)
+                            else if (s.score > 40 && s.score > best.score)
                                 best = s;
                         }
                     }
@@ -460,14 +463,14 @@ namespace INFOIBV
                 return null;
 
             int res = 0;
-            for (int a = x; a <= x+w; a++)
+            for (int a = x; a <= x + w; a++)
             {
                 if (d[a, y] == 255)
                     res++;
                 if (d[a, y + h] == 255)
                     res++;
             }
-            for (int b = y; b <= y+h; b++)
+            for (int b = y; b <= y + h; b++)
             {
                 if (d[x, b] == 255)
                     res++;
