@@ -64,8 +64,8 @@ namespace INFOIBV
             Bewerkingen bw = new Bewerkingen();
 
             double[,] a = bw.ToGray(Image);
-            a = bw.DoubleThresHold(a);
-
+            a = bw.ToBinary(a, 120);
+            a = bw.HoughTransform(a);
             Image = bw.ToColor(a);
             //==========================================================================================
 

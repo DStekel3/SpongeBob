@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 
@@ -97,6 +98,41 @@ namespace INFOIBV
             }
 
             return output;
+        }
+
+        public double[,] BinaryMedian(double[,] d)
+        {
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+            double[,] result = new double[width, height];
+
+            int[,] median = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+            List<double> vals = new List<double>();
+
+            Parallel.For(1, height - 1, y =>
+              {
+                  Parallel.For(1, width - 1, x =>
+                  {
+                      int black = 0;
+                      int white = 0;
+                      for(int u= -1; u <= 1; u++)
+                      {
+                          for(int v=-1;v<=1;v++)
+                          {
+                              if (d[x + u, y + v] == 0)
+                                  black++;
+                              else
+                                  white++;
+                          }
+                          if (black > white)
+                              result[x, y] = 0;
+                          else
+                              result[x, y] = 255;
+                      }
+                  });
+              });
+
+            return result;
         }
 
         public double[,] Dilation(double[,] d, int th, int amount)
@@ -316,5 +352,63 @@ namespace INFOIBV
             return output;
         }
 
+        public double[,] HoughTransform(double[,] d)
+        {
+            /* Perform Hough Line Transform on img */
+            int w = d.GetLength(0);
+            int h = d.GetLength(1);
+
+            /* the middle of img is made the origin */
+
+            double pmax = Math.Sqrt(((w / 2) * (w / 2)) + ((h / 2) * (h / 2)));
+            double tmax = Math.PI * 2;
+
+            // step sizes
+            double dp = pmax / (double)w;
+            double dt = tmax / (double)h;
+
+            int[,] A = new int[w * 2, h * 2]; // accumulator array
+
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    if (d[x, h - y - 1] == 255) // pixel is white - h-y flips incoming img
+                    {
+                        // book claims it's j = 1, i think it should be j = 0
+                        for (int j = 0; j < h; j++)
+                        {
+                            double row = ((double)(x - (w / 2)) * Math.Cos(dt * (double)j)) + ((double)(y - (h / 2)) * Math.Sin(dt * (double)j));
+                            // find index k of A closest to row
+                            int k = (int)((row / pmax) * w);
+                            if (k >= 0 && k < w) A[k, j]++;
+                        }
+                    }
+                }
+            }
+
+            // find max of A, to normalize colors
+            int amax = 0;
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    if (A[x, y] > amax) amax = A[x, y];
+                }
+            }
+
+            double[,] res = new double[w, h];
+            // make us a greyscale bitmap
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    int b = 0;
+                    if (amax != 0) b = (int)(((double)A[x, y] / (double)amax) * 255.0);
+                    res[x, y] = b;
+                }
+            }
+            return res;
+        }
     }
 }
