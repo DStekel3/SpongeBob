@@ -54,7 +54,7 @@
             // openImageDialog
             // 
             this.openImageDialog.Filter = "Bitmap files (*.bmp;*.gif;*.jpg;*.png;*.tiff;*.jpeg)|*.bmp;*.gif;*.jpg;*.png;*.ti" +
-                "ff;*.jpeg";
+    "ff;*.jpeg";
             this.openImageDialog.InitialDirectory = "..\\..\\images";
             // 
             // imageFileName

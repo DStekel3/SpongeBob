@@ -61,12 +61,14 @@ namespace INFOIBV
 
             //==========================================================================================
             // TODO: include here your own code
-            Bewerkingen b = new Bewerkingen();
+            Bewerkingen bw = new Bewerkingen();
 
-            double[,] grey = b.ToGray(Image);
-            grey = b.Edge(grey);
-            
-            Image = b.ToColor(grey);
+            double[,] a = bw.ToGray(Image);
+            a = bw.Smooth(a, 3);
+            a = bw.ToBinary(a, 150);
+            //a = bw.Opening(a, 5);
+            a = bw.Erosion(a, 3, 5);
+            Image = bw.ToColor(a);
             //==========================================================================================
 
             // Copy array to output Bitmap
