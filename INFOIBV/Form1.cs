@@ -66,9 +66,10 @@ namespace INFOIBV
             double[,] a = bw.ToGray(Image);
             a = bw.Smooth(a, 3);
             a = bw.ToBinary(a, 150);
-            //a = bw.Opening(a, 5);
-            a = bw.Erosion(a, 3, 5);
-            Image = bw.ToColor(a);
+            a = bw.Edge(a);
+            a = bw.Dilation(a, 3, 1);
+            Score s = bw.FindSquares(a);
+            Image = bw.ToColor(a,s);
             //==========================================================================================
 
             // Copy array to output Bitmap

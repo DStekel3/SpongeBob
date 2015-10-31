@@ -26,12 +26,12 @@ namespace INFOIBV
                 Parallel.For(0, height, y =>
                 {
                     Color pixelColor = c[x, y];
-                     int avg = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.5 + pixelColor.B * 0.2);
-          //           int avg = (pixelColor.R + pixelColor.G + pixelColor.B)/3;
+                    int avg = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.5 + pixelColor.B * 0.2);
+                    //           int avg = (pixelColor.R + pixelColor.G + pixelColor.B)/3;
 
                     if (avg > 255)
                         avg = 255;
-                   
+
 
                     d[x, y] = avg;
                 });
@@ -55,8 +55,38 @@ namespace INFOIBV
                         output[x, y] = 255;
                 }
             }
-            
+
             return output;
+        }
+
+        public Color[,] ToColor(double[,] d, Score s)
+        {
+            // Convert a double array to a Color array so the Image can be displayed
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+            Color[,] c = new Color[width, height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    Color newColor = Color.FromArgb((int)d[x, y], (int)d[x, y], (int)d[x, y]);
+                    c[x, y] = newColor;
+                }
+            }
+
+            for(int x = s.x; x<= s.x+s.w;x++)
+            {
+                c[x, s.y] = Color.FromArgb(0, 255, 0);
+                c[x, s.y+s.h] = Color.FromArgb(0, 255, 0);
+            }
+            for (int y = s.y; y <= s.y + s.h; y++)
+            {
+                c[s.x, y] = Color.FromArgb(0, 255, 0);
+                c[s.x+s.w, y] = Color.FromArgb(0, 255, 0);
+            }
+
+            return c;
         }
 
         public Color[,] ToColor(double[,] d)
@@ -74,7 +104,6 @@ namespace INFOIBV
                     c[x, y] = newColor;
                 }
             }
-
             return c;
         }
 
@@ -116,9 +145,9 @@ namespace INFOIBV
                   {
                       int black = 0;
                       int white = 0;
-                      for(int u= -1; u <= 1; u++)
+                      for (int u = -1; u <= 1; u++)
                       {
-                          for(int v=-1;v<=1;v++)
+                          for (int v = -1; v <= 1; v++)
                           {
                               if (d[x + u, y + v] == 0)
                                   black++;
@@ -148,21 +177,21 @@ namespace INFOIBV
             {
                 for (int y = 1; y < height - 1; y++)
                 {
-                    int totaal = 0;                           
+                    int totaal = 0;
                     //Kernel 3x3
                     for (int i = -1; i < 2; i++)
                     {
                         for (int j = -1; j < 2; j++)
                         {
-                            if (d[x + i, y + j] == 0)
+                            if (d[x + i, y + j] == 255)
                                 totaal++;
                         }
                     }
 
-                    if (totaal >=  th)
+                    if (totaal < th)
                         output[x, y] = 0;
                     else
-                        output[x, y] = d[x, y];
+                        output[x, y] = 255;
                 }
             }
 
@@ -180,22 +209,24 @@ namespace INFOIBV
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
-            for (int x = 1; x < width - 1; x++)
+            for (int x = 0; x < width - 1; x++)
             {
-                for (int y = 1; y < height - 1; y++)
+                for (int y = 0; y < height - 1; y++)
                 {
-                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 0
-                    //Kernel 3x3
-                    for (int i = -1; i < 2; i++)
+                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 255
+                    if (x != 0 && x != width - 1 && y != 0 && y != height - 1)
                     {
-                        for (int j = -1; j < 2; j++)
+                        //Kernel 3x3
+                        for (int i = -1; i < 2; i++)
                         {
-                            if (d[x + i, y + j] == 0)
-                                totaal++;
+                            for (int j = -1; j < 2; j++)
+                            {
+                                if (d[x + i, y + j] == 255)
+                                    totaal++;
+                            }
                         }
                     }
-
-                    if (totaal < th)
+                    if (totaal > th)
                         output[x, y] = 255;
                     else
                         output[x, y] = d[x, y];
@@ -236,12 +267,12 @@ namespace INFOIBV
                    }
                    double total = Math.Abs(xval) + Math.Abs(yval);
                    if (total > 0)
-                       output[x, y] = d[x, y];
-                   else
                        output[x, y] = 255;
+                   else
+                       output[x, y] = 0;
                });
            });
-                    return output;
+            return output;
         }
 
         public double[,] Subtract(double[,] a, double[,] b)
@@ -253,10 +284,10 @@ namespace INFOIBV
             {
                 Parallel.For(0, a.GetLength(0), x =>
                 {
-                      if (a[x, y] == 0 && a[x, y] == b[x, y])
+                    if (a[x, y] == 0 && a[x, y] == b[x, y])
                         result[x, y] = 255;
                     else
-                          result[x, y] = a[x, y];
+                        result[x, y] = a[x, y];
                 });
             });
             return result;
@@ -362,70 +393,95 @@ namespace INFOIBV
         {
             d = Dilation(d, 1, 1);
             d = Erosion(d, 1, 1);
-            
+
             if (amount > 1)
                 d = Closing(d, amount - 1);
 
             return d;
         }
 
-        public double[,] HoughTransform(double[,] d)
+        public Score FindSquares(double[,]d)
         {
-            /* Perform Hough Line Transform on img */
-            int w = d.GetLength(0);
-            int h = d.GetLength(1);
+            Score s = SquareTest(d);
+            return s;
+        }
 
-            /* the middle of img is made the origin */
+        public Score SquareTest(double[,] z)
+        {
+            int w = z.GetLength(0);
+            int h = z.GetLength(1);
 
-            double pmax = Math.Sqrt(((w / 2) * (w / 2)) + ((h / 2) * (h / 2)));
-            double tmax = Math.PI * 2;
-
-            // step sizes
-            double dp = pmax / (double)w;
-            double dt = tmax / (double)h;
-
-            int[,] A = new int[w * 2, h * 2]; // accumulator array
+            Score best = new Score(-1,-1,-1,-1,-1);
 
             for (int x = 0; x < w; x++)
             {
                 for (int y = 0; y < h; y++)
                 {
-                    if (d[x, h - y - 1] == 255) // pixel is white - h-y flips incoming img
+                    if (z[x, y] == 255)
                     {
-                        // book claims it's j = 1, i think it should be j = 0
-                        for (int j = 0; j < h; j++)
+                        //if pixel is white
+                        for (int n = 100; n <= 400; n++)
                         {
-                            double row = ((double)(x - (w / 2)) * Math.Cos(dt * (double)j)) + ((double)(y - (h / 2)) * Math.Sin(dt * (double)j));
-                            // find index k of A closest to row
-                            int k = (int)((row / pmax) * w);
-                            if (k >= 0 && k < w) A[k, j]++;
+                            int width = n;
+                            int height = n;
+                            Score s = GetScoreSquare(z, x, y, width, height, 0.0);
+                            if (s == null)
+                                break;
+                            else if(s.score > 40 && s.score > best.score)
+                                best = s;
                         }
                     }
                 }
             }
+            return best;
+        }
 
-            // find max of A, to normalize colors
-            int amax = 0;
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    if (A[x, y] > amax) amax = A[x, y];
-                }
-            }
+        public Score GetScoreSquare(double[,] d, int x, int y, int w, int h, double angle)
+        {
+            int min_h = 50;
+            int min_w = 50;
+            int max_h = 400;
+            int max_w = 400;
 
-            double[,] res = new double[w, h];
-            // make us a greyscale bitmap
-            for (int x = 0; x < w; x++)
+            if (x + w >= d.GetLength(0))
+                return null;
+            if (y + h >= d.GetLength(1))
+                return null;
+
+            int res = 0;
+            for (int a = x; a <= x+w; a++)
             {
-                for (int y = 0; y < h; y++)
-                {
-                    int b = 0;
-                    if (amax != 0) b = (int)(((double)A[x, y] / (double)amax) * 255.0);
-                    res[x, y] = b;
-                }
+                if (d[a, y] == 255)
+                    res++;
+                if (d[a, y + h] == 255)
+                    res++;
             }
-            return res;
+            for (int b = y; b <= y+h; b++)
+            {
+                if (d[x, b] == 255)
+                    res++;
+                if (d[x + w, b] == 255)
+                    res++;
+            }
+            return new Score(x, y, w, h, res);
+        }
+
+        public double ToRadians(int x)
+        {
+            return x / 180 * Math.PI;
+        }
+    }
+
+    public class Score
+    {
+        public int x, y, w, h, score;
+        public Score(int _x, int _y, int _w, int _h, int _score)
+        {
+            x = _x;
+            y = _y;
+            w = _w;
+            h = _h;
+            score = _score;
         }
     }
 }
