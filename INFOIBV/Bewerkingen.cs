@@ -427,5 +427,15 @@ namespace INFOIBV
             }
             return res;
         }
+        public double[,] Opening(double[,] d, int amount)
+        {
+            d = Erosion(d, 1, 1);
+            d = Dilation(d, 1, 1);
+
+            if (amount > 1)
+                d = Opening(d, amount - 1);
+
+            return d;
+        }
     }
 }
