@@ -63,14 +63,18 @@ namespace INFOIBV
             // TODO: include here your own code
             Bewerkingen bw = new Bewerkingen();
             double[,] a = bw.ToGray(Image);
+            a = bw.Inverse(a);
             a = bw.Smooth(a, 3);
             a = bw.ToBinary(a, 150);
             a = bw.Edge(a);
+            a = bw.HoughLine(a);
+            Image = bw.ToColor(a);
+            /*
             Score s = bw.FindSquares(a);
             if (s.score != -1)
                 Image = bw.ToColor(a, s);
             else
-                Image = bw.ToColor(a);
+                Image = bw.ToColor(a);*/
                 
             //==========================================================================================
 

@@ -278,7 +278,7 @@ namespace INFOIBV
                    }
                    double total = Math.Abs(xval) + Math.Abs(yval);
                    if (total > 0)
-                       output[x, y] = d[x,y];
+                       output[x, y] = d[x, y];
                    else
                        output[x, y] = 0;
                });
@@ -340,33 +340,29 @@ namespace INFOIBV
         {
             // Smooth
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
-            for(int t =0;t<d.GetLength(0); t++)
-            {
-                for (int u = 0; u < d.GetLength(1); u++)
-                    output[t, u] = 255;
-            }
+
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
             double[,] kernel = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
 
-            Parallel.For(1, width-1, x =>
-            {
-                Parallel.For(1, height-1, y =>
-                {
-                    double val = 0;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
+            Parallel.For(1, width - 1, x =>
+              {
+                  Parallel.For(1, height - 1, y =>
+                  {
+                      double val = 0;
+                      for (int i = 0; i < 3; i++)
+                      {
+                          for (int j = 0; j < 3; j++)
+                          {
+                              val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
 
-                        }
-                    }
+                          }
+                      }
 
-                    output[x, y] = val;
-                });
-            });
+                      output[x, y] = val;
+                  });
+              });
             if (amount > 1)
                 output = Smooth(output, amount - 1);
             return output;
@@ -420,6 +416,89 @@ namespace INFOIBV
             return s;
         }
 
+        public double[,] HoughLine(double[,] d)
+        {
+            var t = Hough(d);
+            int dist = t.Item1;
+            int o = t.Item2;
+            int x = d.GetLength(0) / 2;
+            int y = d.GetLength(1) / 2;
+            x+= (int)Math.Cos(o) * dist;
+            y+= (int)Math.Sin(o) * dist;
+
+            o = (int)o - Math.PI / 2;
+            return d;
+
+        }
+
+        public Tuple<int,int> Hough(double[,] d)
+        {
+            /* Perform Hough Line Transform on img */
+
+            /* the middle of img is made the origin */
+            int w = d.GetLength(0);
+            int h = d.GetLength(1);
+            double[,] res = new double[w, h];
+            double pmax = Math.Sqrt(((w / 2) * (w / 2)) + ((h / 2) * (h / 2)));
+            double tmax = Math.PI * 2;
+
+            // step sizes
+            double dp = pmax / (double)w;
+            double dt = tmax / (double)h;
+
+            int[,] A = new int[w * 2, h * 2]; // accumulator array
+
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    if (d[x, h - y - 1] == 255) // pixel is white - h-y flips incoming img
+                    {
+                        // book claims it's j = 1, i think it should be j = 0
+                        for (int j = 0; j < h; j++)
+                        {
+                            double row = ((double)(x - (w / 2)) * Math.Cos(dt * (double)j)) + ((double)(y - (h / 2)) * Math.Sin(dt * (double)j));
+                            // find index k of A closest to row
+                            int k = (int)((row / pmax) * w);
+                            if (k >= 0 && k < w) A[k, j]++;
+                        }
+                    }
+                }
+            }
+
+            // find max of A, to normalize colors
+            int amax = 0;
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    if (A[x, y] > amax) amax = A[x, y];
+                }
+            }
+
+            // make us a greyscale bitmap
+            int highest = 0;
+            int _x = -1;
+            int _y = -1;
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    int b = 0;
+                    if (amax != 0) b = (int)(((double)A[x, y] / (double)amax) * 255.0);
+                    res[x, y] = b;
+                    if (A[x,y] > highest)
+                    {
+                        highest = A[x,y];
+                        _x = x;
+                        _y = y;
+                    }
+                }
+            }
+
+            return new Tuple<int,int>(_x, _y);
+        }
+
         public Score SquareTest(double[,] z)
         {
             int w = z.GetLength(0);
@@ -466,16 +545,24 @@ namespace INFOIBV
             for (int a = x; a <= x + w; a++)
             {
                 if (d[a, y] == 255)
-                    res++;
+                    res += 2;
+                else
+                    res--;
                 if (d[a, y + h] == 255)
-                    res++;
+                    res += 2;
+                else
+                    res--;
             }
             for (int b = y; b <= y + h; b++)
             {
                 if (d[x, b] == 255)
-                    res++;
+                    res += 2;
+                else
+                    res--;
                 if (d[x + w, b] == 255)
-                    res++;
+                    res += 2;
+                else
+                    res--;
             }
             return new Score(x, y, w, h, res);
         }
@@ -483,6 +570,17 @@ namespace INFOIBV
         public double ToRadians(int x)
         {
             return x / 180 * Math.PI;
+        }
+
+        public double[,] Opening(double[,] d, int amount)
+        {
+            d = Erosion(d, 1, 1);
+            d = Dilation(d, 1, 1);
+
+            if (amount > 1)
+                d = Opening(d, amount - 1);
+
+            return d;
         }
     }
 
@@ -496,16 +594,6 @@ namespace INFOIBV
             w = _w;
             h = _h;
             score = _score;
-        }
-        public double[,] Opening(double[,] d, int amount)
-        {
-            d = Erosion(d, 1, 1);
-            d = Dilation(d, 1, 1);
-
-            if (amount > 1)
-                d = Opening(d, amount - 1);
-
-            return d;
         }
     }
 }
