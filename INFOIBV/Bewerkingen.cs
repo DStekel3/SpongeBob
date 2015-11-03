@@ -250,6 +250,26 @@ namespace INFOIBV
             return output;
         }
 
+        public double[,] ColorFilter(Color[,] d)
+        {
+            int w = d.GetLength(0);
+            int h = d.GetLength(1);
+
+            double[,] res = new double[w, h];
+            for(int x = 0;x< w;x++)
+            {
+                for (int y = 0;y< h;y++)
+                {
+                    Color z = d[x, y];
+                    if (z.R >= 70 && z.R <= 140 &&
+                        z.G >= 90 && z.G <= 130 &&
+                        z.B >= 0 && z.B <= 50)
+                        res[x, y] = 255;
+                }
+            }
+            return res;
+        }
+
         public double[,] Edge(double[,] d)
         {
             // Get the edges
