@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+
+
 namespace INFOIBV
 {
     public partial class INFOIBV : Form
@@ -64,18 +66,26 @@ namespace INFOIBV
             Bewerkingen bw = new Bewerkingen();
             double[,] a = bw.ToGray(Image);
             a = bw.Inverse(a);
-            a = bw.Smooth(a, 3);
             a = bw.ToBinary(a, 150);
             a = bw.Edge(a);
-            a = bw.HoughLine(a);
+            a = bw.Perimeter(a);
+            //            a = bw.My_Hough(a);
             Image = bw.ToColor(a);
             /*
-            Score s = bw.FindSquares(a);
-            if (s.score != -1)
-                Image = bw.ToColor(a, s);
-            else
-                Image = bw.ToColor(a);*/
-                
+            double cur_x = a.GetLength(0) / 2;
+            double cur_y = a.GetLength(1) / 2;
+            double radian = Math.PI / 180;
+            for(int z = 0; z < t.Item1;z++)
+            {
+                cur_x += Math.Cos(radian * t.Item2);
+                cur_y += Math.Sin(radian * t.Item2);
+                try { a[(int)Math.Round(cur_x), (int)Math.Round(cur_y)] = 255; }
+                catch(IndexOutOfRangeException) { break; }
+            }
+
+            Image = bw.ToColor(a);
+            */
+
             //==========================================================================================
 
             // Copy array to output Bitmap
@@ -90,6 +100,7 @@ namespace INFOIBV
             pictureBox2.Image = (Image)OutputImage;                         // Display output image
             progressBar.Visible = false;                                    // Hide progress bar
         }
+
         
         private void saveButton_Click(object sender, EventArgs e)
         {

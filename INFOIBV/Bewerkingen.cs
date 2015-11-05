@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 
+
 namespace INFOIBV
 {
     class Bewerkingen
     {
-        public object Paralell { get; private set; }
-
         public Bewerkingen() { }
-
-
 
         public double[,] ToGray(Color[,] c)
         {
@@ -436,22 +433,101 @@ namespace INFOIBV
             return s;
         }
 
-        public double[,] HoughLine(double[,] d)
-        {
-            var t = Hough(d);
-            int dist = t.Item1;
-            int o = t.Item2;
-            int x = d.GetLength(0) / 2;
-            int y = d.GetLength(1) / 2;
-            x+= (int)Math.Cos(o) * dist;
-            y+= (int)Math.Sin(o) * dist;
 
-            o = (int)o - Math.PI / 2;
-            return d;
+        public Tuple<int,int> HoughLine(double[,] d)
+        {
+            var r = Hough(d);
+            var t = GetMaximumHough(r);
+            
+            return t;
 
         }
 
-        public Tuple<int,int> Hough(double[,] d)
+        public Tuple<int,int> GetMaximumHough(double[,] r)
+        {
+            int max = 0;
+            int rho = -1;
+            int theta = -1;
+            for (int t = 0; t < r.GetLength(0); t++)
+            {
+                for (int u = 0; u < r.GetLength(1); u++)
+                {
+                    if (r[t, u] > max)
+                    {
+                        theta = u;
+                        rho = t;
+                    }
+                }
+            }
+            return new Tuple<int, int>(theta, rho);
+        }
+
+        public double[,] My_Hough(double[,] d)
+        {
+            int w = d.GetLength(0);
+            int h = d.GetLength(1);
+            
+                int rho_max = (int)Math.Floor(Math.Sqrt(w * w + h * h)) + 1;
+                int[,] accarray = new int[rho_max, 180];
+                double[] theta = new double[180];
+
+                double i = 0;
+                for(int index=0;index<180;index++)
+                {
+                    theta[index] = i;
+                    i += Math.PI / 180;
+                }
+
+                double rho;
+                int rho_int;
+                for(int n=0;n< w;n++)
+                {
+                    for(int m=0;m< h;m++)
+                    {
+                        if(d[n,m] == 255)
+                        {
+                            for(int k=0;k<180;k++)
+                            {
+                                rho = (m * Math.Cos(theta[k])) + (n * Math.Sin(theta[k]));
+                                rho_int = (int)Math.Round(rho / 2 + rho_max / 2);
+                                accarray[rho_int, k]++;
+                            }
+                        }
+                    }
+                }
+
+                int amax = 0;
+                for (int x = 0; x < rho_max; x++)
+                {
+                    for (int y = 0; y < 180; y++)
+                    {
+                        if (accarray[x, y] > amax) amax = accarray[x, y];
+                    }
+                }
+                double[,] res = new double[w, h];
+                int highest = 0;
+                int _x = -1;
+                int _y = -1;
+                for (int x = 0; x < w; x++)
+                {
+                    for (int y = 0; y < 180; y++)
+                    {
+                        int b = 0;
+                        if (amax != 0) b = (int)(((double)accarray[x, y] / (double)amax) * 255.0);
+                        res[x, y] = b;
+                        if (accarray[x, y] > highest)
+                        {
+                            highest = accarray[x, y];
+                            _x = x;
+                            _y = y;
+                        }
+                    }
+                }
+                return res;
+            
+        }
+
+        public double[,] Hough(double[,] d)
         {
             /* Perform Hough Line Transform on img */
 
@@ -466,7 +542,7 @@ namespace INFOIBV
             double dp = pmax / (double)w;
             double dt = tmax / (double)h;
 
-            int[,] A = new int[w * 2, h * 2]; // accumulator array
+            int[,] A = new int[w, h]; // accumulator array
 
             for (int x = 0; x < w; x++)
             {
@@ -515,8 +591,8 @@ namespace INFOIBV
                     }
                 }
             }
-
-            return new Tuple<int,int>(_x, _y);
+            return res;
+            //return new Tuple<int,int>(_x, _y);
         }
 
         public Score SquareTest(double[,] z)
@@ -590,6 +666,67 @@ namespace INFOIBV
         public double ToRadians(int x)
         {
             return x / 180 * Math.PI;
+        }
+
+        public double[,] Perimeter(double[,] d)
+        {
+            for(int y =0;y<d.GetLength(1);y++)
+            {
+                for(int x=0;x<d.GetLength(0);x++)
+                {
+                    if(d[x,y] == 255)
+                    {
+                        var s = GetPerimeter(x, y, d);
+                        d = s.Item1;
+                    }
+                }
+            }
+            return d;
+        }
+
+        private Tuple<double[,], double> GetPerimeter(int x, int y, double[,] d)
+        {
+            int max_x = d.GetLength(0)-1;
+            int max_y = d.GetLength(1)-1;
+            int cur_x = x;
+            int cur_y = y;
+            double score = 0;
+            while(!(cur_x == x && cur_y == y && score>0))
+            {
+                double cur_score = score;
+                // check right
+                if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
+                {
+                    d[cur_x, cur_y] = 0;
+                    score++;
+                    cur_x++;
+                }
+                // check bottom
+                else if (cur_y != max_y && d[cur_x, cur_y + 1] == 255)
+                {
+                    d[cur_x, cur_y] = 0;
+                    score++;
+                    cur_y++;
+                }
+                // check left
+                else if (cur_x != 0 && d[cur_x - 1, cur_y] == 255)
+                {
+                    d[cur_x, cur_y] = 0;
+                    score++;
+                    cur_x--;
+                }
+
+                //  check top
+                else if (cur_y != 0 && d[cur_x, cur_y - 1] == 255)
+                {
+                    d[cur_x, cur_y] = 0;
+                    score++;
+                    cur_y--;
+                }
+                if (cur_score == score)
+                    break;
+            }
+            return new Tuple<double[,], double>(d, score);
         }
 
         public double[,] Opening(double[,] d, int amount)
