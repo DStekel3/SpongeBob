@@ -694,35 +694,63 @@ namespace INFOIBV
             while(!(cur_x == x && cur_y == y && score>0))
             {
                 double cur_score = score;
-                // check right
-                if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
+                d[cur_x, cur_y] = 0;
+                //  check top
+                if (cur_y != 0 && d[cur_x, cur_y - 1] == 255)
                 {
-                    d[cur_x, cur_y] = 0;
+                    score++;
+                    cur_y--;
+                }
+
+                // check top right
+                else if (cur_y != 0 && x < max_x && d[cur_x + 1, cur_y - 1] == 255)
+                {
                     score++;
                     cur_x++;
+                    cur_y--;
+                }
+                // check right
+                else if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
+                {
+                    score++;
+                    cur_x++;
+                }
+
+                // check bottom right
+                else if (cur_x < max_x && cur_y < max_y && d[cur_x + 1, cur_y + 1] == 255)
+                {
+                    score++;
+                    cur_x++;
+                    cur_y++;
                 }
                 // check bottom
                 else if (cur_y != max_y && d[cur_x, cur_y + 1] == 255)
                 {
-                    d[cur_x, cur_y] = 0;
                     score++;
+                    cur_y++;
+                }
+                // check bottom left
+                else if (cur_x > 0 && cur_y < max_y && d[cur_x - 1, cur_y + 1] == 255)
+                {
+                    score++;
+                    cur_x--;
                     cur_y++;
                 }
                 // check left
                 else if (cur_x != 0 && d[cur_x - 1, cur_y] == 255)
                 {
-                    d[cur_x, cur_y] = 0;
                     score++;
                     cur_x--;
                 }
 
-                //  check top
-                else if (cur_y != 0 && d[cur_x, cur_y - 1] == 255)
+                // check top left
+                else if(cur_x >0 && cur_y >0 && d[cur_x-1, cur_y-1] == 255)
                 {
-                    d[cur_x, cur_y] = 0;
                     score++;
+                    cur_x--;
                     cur_y--;
                 }
+                
                 if (cur_score == score)
                     break;
             }
@@ -740,6 +768,8 @@ namespace INFOIBV
             return d;
         }
     }
+
+
 
     public class Score
     {
