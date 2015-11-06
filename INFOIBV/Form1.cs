@@ -65,15 +65,16 @@ namespace INFOIBV
             // TODO: include here your own code
             Bewerkingen bw = new Bewerkingen();
             double[,] a = bw.ToGray(Image);
-            //a = bw.Inverse(a);
             a = bw.ToBinary(a, 150);
             a = bw.Opening(a, 2);
-            a = bw.Edge(a);
+
+            double[,] b = bw.Edge(a);
             
-            a = bw.Perimeter(a);
-            //            a = bw.My_Hough(a);
+            b = bw.Perimeter(b);
+
+            a = bw.ErosionPlus(a, bw.objects[0]);
             
-            Image = bw.ToColor(bw.ToGray(Image));
+            Image = bw.ToColor(a);
             /*
             double cur_x = a.GetLength(0) / 2;
             double cur_y = a.GetLength(1) / 2;

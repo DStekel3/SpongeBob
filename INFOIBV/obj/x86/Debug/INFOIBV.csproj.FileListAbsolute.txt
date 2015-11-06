@@ -29,3 +29,11 @@ D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Imaging.xml
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.pdb
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.xml
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Math.xml
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.exe
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.pdb
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.INFOIBV.resources
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.Properties.Resources.resources
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
+C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
