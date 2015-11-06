@@ -8,6 +8,7 @@ namespace INFOIBV
 {
     class Bewerkingen
     {
+        List<Object> objects = new List<Object>();
         public Bewerkingen() { }
 
         public double[,] ToGray(Color[,] c)
@@ -253,9 +254,9 @@ namespace INFOIBV
             int h = d.GetLength(1);
 
             double[,] res = new double[w, h];
-            for(int x = 0;x< w;x++)
+            for (int x = 0; x < w; x++)
             {
-                for (int y = 0;y< h;y++)
+                for (int y = 0; y < h; y++)
                 {
                     Color z = d[x, y];
                     if (z.R >= 70 && z.R <= 140 &&
@@ -434,16 +435,16 @@ namespace INFOIBV
         }
 
 
-        public Tuple<int,int> HoughLine(double[,] d)
+        public Tuple<int, int> HoughLine(double[,] d)
         {
             var r = Hough(d);
             var t = GetMaximumHough(r);
-            
+
             return t;
 
         }
 
-        public Tuple<int,int> GetMaximumHough(double[,] r)
+        public Tuple<int, int> GetMaximumHough(double[,] r)
         {
             int max = 0;
             int rho = -1;
@@ -466,65 +467,65 @@ namespace INFOIBV
         {
             int w = d.GetLength(0);
             int h = d.GetLength(1);
-            
-                int rho_max = (int)Math.Floor(Math.Sqrt(w * w + h * h)) + 1;
-                int[,] accarray = new int[rho_max, 180];
-                double[] theta = new double[180];
 
-                double i = 0;
-                for(int index=0;index<180;index++)
-                {
-                    theta[index] = i;
-                    i += Math.PI / 180;
-                }
+            int rho_max = (int)Math.Floor(Math.Sqrt(w * w + h * h)) + 1;
+            int[,] accarray = new int[rho_max, 180];
+            double[] theta = new double[180];
 
-                double rho;
-                int rho_int;
-                for(int n=0;n< w;n++)
+            double i = 0;
+            for (int index = 0; index < 180; index++)
+            {
+                theta[index] = i;
+                i += Math.PI / 180;
+            }
+
+            double rho;
+            int rho_int;
+            for (int n = 0; n < w; n++)
+            {
+                for (int m = 0; m < h; m++)
                 {
-                    for(int m=0;m< h;m++)
+                    if (d[n, m] == 255)
                     {
-                        if(d[n,m] == 255)
+                        for (int k = 0; k < 180; k++)
                         {
-                            for(int k=0;k<180;k++)
-                            {
-                                rho = (m * Math.Cos(theta[k])) + (n * Math.Sin(theta[k]));
-                                rho_int = (int)Math.Round(rho / 2 + rho_max / 2);
-                                accarray[rho_int, k]++;
-                            }
+                            rho = (m * Math.Cos(theta[k])) + (n * Math.Sin(theta[k]));
+                            rho_int = (int)Math.Round(rho / 2 + rho_max / 2);
+                            accarray[rho_int, k]++;
                         }
                     }
                 }
+            }
 
-                int amax = 0;
-                for (int x = 0; x < rho_max; x++)
+            int amax = 0;
+            for (int x = 0; x < rho_max; x++)
+            {
+                for (int y = 0; y < 180; y++)
                 {
-                    for (int y = 0; y < 180; y++)
+                    if (accarray[x, y] > amax) amax = accarray[x, y];
+                }
+            }
+            double[,] res = new double[w, h];
+            int highest = 0;
+            int _x = -1;
+            int _y = -1;
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < 180; y++)
+                {
+                    int b = 0;
+                    if (amax != 0) b = (int)(((double)accarray[x, y] / (double)amax) * 255.0);
+                    res[x, y] = b;
+                    if (accarray[x, y] > highest)
                     {
-                        if (accarray[x, y] > amax) amax = accarray[x, y];
+                        highest = accarray[x, y];
+                        _x = x;
+                        _y = y;
                     }
                 }
-                double[,] res = new double[w, h];
-                int highest = 0;
-                int _x = -1;
-                int _y = -1;
-                for (int x = 0; x < w; x++)
-                {
-                    for (int y = 0; y < 180; y++)
-                    {
-                        int b = 0;
-                        if (amax != 0) b = (int)(((double)accarray[x, y] / (double)amax) * 255.0);
-                        res[x, y] = b;
-                        if (accarray[x, y] > highest)
-                        {
-                            highest = accarray[x, y];
-                            _x = x;
-                            _y = y;
-                        }
-                    }
-                }
-                return res;
-            
+            }
+            return res;
+
         }
 
         public double[,] Hough(double[,] d)
@@ -583,9 +584,9 @@ namespace INFOIBV
                     int b = 0;
                     if (amax != 0) b = (int)(((double)A[x, y] / (double)amax) * 255.0);
                     res[x, y] = b;
-                    if (A[x,y] > highest)
+                    if (A[x, y] > highest)
                     {
-                        highest = A[x,y];
+                        highest = A[x, y];
                         _x = x;
                         _y = y;
                     }
@@ -670,28 +671,30 @@ namespace INFOIBV
 
         public double[,] Perimeter(double[,] d)
         {
-            for(int y =0;y<d.GetLength(1);y++)
+            for (int y = 0; y < d.GetLength(1); y++)
             {
-                for(int x=0;x<d.GetLength(0);x++)
+                for (int x = 0; x < d.GetLength(0); x++)
                 {
-                    if(d[x,y] == 255)
+                    if (d[x, y] == 255)
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
+                        objects.Add(s.Item2);
                     }
                 }
             }
             return d;
         }
 
-        private Tuple<double[,], double> GetPerimeter(int x, int y, double[,] d)
+        private Tuple<double[,], Object> GetPerimeter(int x, int y, double[,] d)
         {
-            int max_x = d.GetLength(0)-1;
-            int max_y = d.GetLength(1)-1;
+            int max_x = d.GetLength(0) - 1;
+            int max_y = d.GetLength(1) - 1;
             int cur_x = x;
             int cur_y = y;
             double score = 0;
-            while(!(cur_x == x && cur_y == y && score>0))
+            Object o = new Object(x, y);
+            while (!(cur_x == x && cur_y == y && score > 0))
             {
                 double cur_score = score;
                 d[cur_x, cur_y] = 0;
@@ -700,6 +703,8 @@ namespace INFOIBV
                 {
                     score++;
                     cur_y--;
+                    if (cur_y < o.min_y)
+                        o.min_y = cur_y;
                 }
 
                 // check top right
@@ -708,12 +713,18 @@ namespace INFOIBV
                     score++;
                     cur_x++;
                     cur_y--;
+                    if (cur_x > o.max_x)
+                        o.max_x = cur_x;
+                    if (cur_y < o.min_y)
+                        o.min_y = cur_y;
                 }
                 // check right
                 else if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
                 {
                     score++;
                     cur_x++;
+                    if (cur_x > o.max_x)
+                        o.max_x = cur_x;
                 }
 
                 // check bottom right
@@ -722,12 +733,18 @@ namespace INFOIBV
                     score++;
                     cur_x++;
                     cur_y++;
+                    if (cur_x > o.max_x)
+                        o.max_x = cur_x;
+                    if (cur_y < o.min_y)
+                        o.min_y = cur_y;
                 }
                 // check bottom
                 else if (cur_y != max_y && d[cur_x, cur_y + 1] == 255)
                 {
                     score++;
                     cur_y++;
+                    if (cur_y > o.max_y)
+                        o.max_y = cur_y;
                 }
                 // check bottom left
                 else if (cur_x > 0 && cur_y < max_y && d[cur_x - 1, cur_y + 1] == 255)
@@ -735,26 +752,36 @@ namespace INFOIBV
                     score++;
                     cur_x--;
                     cur_y++;
+                    if (cur_x < o.min_x)
+                        o.min_x = cur_x;
+                    if (cur_y > o.max_y)
+                        o.max_y = cur_y;
                 }
                 // check left
                 else if (cur_x != 0 && d[cur_x - 1, cur_y] == 255)
                 {
                     score++;
                     cur_x--;
+                    if (cur_x < o.min_x)
+                        o.min_x = cur_x;
                 }
 
                 // check top left
-                else if(cur_x >0 && cur_y >0 && d[cur_x-1, cur_y-1] == 255)
+                else if (cur_x > 0 && cur_y > 0 && d[cur_x - 1, cur_y - 1] == 255)
                 {
                     score++;
                     cur_x--;
                     cur_y--;
+                    if (cur_x < o.min_x)
+                        o.min_x = cur_x;
+                    if (cur_y < o.min_y)
+                        o.min_y = cur_y;
                 }
-                
+
                 if (cur_score == score)
                     break;
             }
-            return new Tuple<double[,], double>(d, score);
+            return new Tuple<double[,], double>(d, o);
         }
 
         public double[,] Opening(double[,] d, int amount)
@@ -769,7 +796,15 @@ namespace INFOIBV
         }
     }
 
-
+    public class Object
+    {
+        public int min_x, max_x, min_y, max_y;
+        public Object(int a, int b)
+        {
+            min_x = a; max_x = a;
+            min_y = b; max_y = b;
+        }
+    }
 
     public class Score
     {
