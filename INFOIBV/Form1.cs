@@ -67,11 +67,13 @@ namespace INFOIBV
             double[,] a = bw.ToGray(Image);
             a = bw.Inverse(a);
             a = bw.ToBinary(a, 150);
+            a = bw.Opening(a, 2);
             a = bw.Edge(a);
+            
             a = bw.Perimeter(a);
-            a = bw.DrawObjects(a);
             //            a = bw.My_Hough(a);
-            Image = bw.ToColor(a);
+            
+            Image = bw.ToColor(bw.ToGray(Image));
             /*
             double cur_x = a.GetLength(0) / 2;
             double cur_y = a.GetLength(1) / 2;

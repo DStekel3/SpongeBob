@@ -56,48 +56,7 @@ namespace INFOIBV
 
             return output;
         }
-
-        public Color[,] ToColor(double[,] d, Score s)
-        {
-            // Convert a double array to a Color array so the Image can be displayed
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-            Color[,] c = new Color[width, height];
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Color newColor = Color.FromArgb((int)d[x, y], (int)d[x, y], (int)d[x, y]);
-                    c[x, y] = newColor;
-                }
-            }
-
-            for (int x = s.x; x <= s.x + s.w; x++)
-            {
-                c[x, s.y - 1] = Color.FromArgb(255, 0, 0);
-                c[x, s.y] = Color.FromArgb(255, 0, 0);
-                c[x, s.y + 1] = Color.FromArgb(255, 0, 0);
-
-                c[x, s.y + s.h] = Color.FromArgb(255, 0, 0);
-                c[x, s.y + s.h - 1] = Color.FromArgb(255, 0, 0);
-                c[x, s.y] = Color.FromArgb(255, 0, 0);
-                c[x, s.y + s.h + 1] = Color.FromArgb(255, 0, 0);
-            }
-            for (int y = s.y; y <= s.y + s.h; y++)
-            {
-                c[s.x - 1, y] = Color.FromArgb(255, 0, 0);
-                c[s.x, y] = Color.FromArgb(255, 0, 0);
-                c[s.x + 1, y] = Color.FromArgb(255, 0, 0);
-
-                c[s.x + s.w - 1, y] = Color.FromArgb(255, 0, 0);
-                c[s.x + s.w, y] = Color.FromArgb(255, 0, 0);
-                c[s.x + s.w + 1, y] = Color.FromArgb(255, 0, 0);
-            }
-
-            return c;
-        }
-
+        
         public Color[,] ToColor(double[,] d)
         {
             // Convert a double array to a Color array so the Image can be displayed
@@ -113,6 +72,7 @@ namespace INFOIBV
                     c[x, y] = newColor;
                 }
             }
+            c = DrawObjects(c);
             return c;
         }
 
@@ -412,8 +372,8 @@ namespace INFOIBV
 
         public double[,] Closing(double[,] d, int amount)
         {
-            d = Dilation(d, 1, 1);
-            d = Erosion(d, 1, 1);
+            d = Dilation(d, 1);
+            d = Erosion(d, 1);
 
             if (amount > 1)
                 d = Closing(d, amount - 1);
@@ -672,11 +632,17 @@ namespace INFOIBV
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
-                        objects.Add(s.Item2);
+                        if(s.Item2.area > 30)
+                            objects.Add(s.Item2);
                     }
                 }
             }
             return d;
+        }
+
+        private void remove_noise(Object item2)
+        {
+            
         }
 
         private Tuple<double[,], Object> GetPerimeter(int x, int y, double[,] d)
@@ -701,16 +667,18 @@ namespace INFOIBV
                 }
 
                 // check top right
-                else if (cur_y != 0 && x < max_x && d[cur_x + 1, cur_y - 1] == 255)
-                {
-                    score++;
-                    cur_x++;
-                    cur_y--;
-                    if (cur_x > o.max_x)
-                        o.max_x = cur_x;
-                    if (cur_y < o.min_y)
-                        o.min_y = cur_y;
-                }
+                //else if (cur_y != 0 && x < max_x && d[cur_x + 1, cur_y - 1] == 255)
+                //{
+                //    score++;
+                //    cur_x++;
+                //    cur_y--;
+                //    if (cur_x > o.max_x)
+                //        o.max_x = cur_x;
+                //    if (cur_y < o.min_y)
+                //        o.min_y = cur_y;
+                //    d[cur_x+1, cur_y-1] = 0;
+                //    d[cur_x, cur_y-1] = 0;
+                //}
                 // check right
                 else if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
                 {
@@ -721,16 +689,19 @@ namespace INFOIBV
                 }
 
                 // check bottom right
-                else if (cur_x < max_x && cur_y < max_y && d[cur_x + 1, cur_y + 1] == 255)
-                {
-                    score++;
-                    cur_x++;
-                    cur_y++;
-                    if (cur_x > o.max_x)
-                        o.max_x = cur_x;
-                    if (cur_y < o.min_y)
-                        o.min_y = cur_y;
-                }
+                //else if (cur_x < max_x && cur_y < max_y && d[cur_x + 1, cur_y + 1] == 255)
+                //{
+                //    score++;
+                //    cur_x++;
+                //    cur_y++;
+                //    if (cur_x > o.max_x)
+                //        o.max_x = cur_x;
+                //    if (cur_y < o.min_y)
+                //        o.min_y = cur_y;
+
+                //    d[cur_x+1, cur_y] = 0;
+                //    d[cur_x, cur_y+1] = 0;
+                //}
                 // check bottom
                 else if (cur_y != max_y && d[cur_x, cur_y + 1] == 255)
                 {
@@ -740,16 +711,19 @@ namespace INFOIBV
                         o.max_y = cur_y;
                 }
                 // check bottom left
-                else if (cur_x > 0 && cur_y < max_y && d[cur_x - 1, cur_y + 1] == 255)
-                {
-                    score++;
-                    cur_x--;
-                    cur_y++;
-                    if (cur_x < o.min_x)
-                        o.min_x = cur_x;
-                    if (cur_y > o.max_y)
-                        o.max_y = cur_y;
-                }
+                //else if (cur_x > 0 && cur_y < max_y && d[cur_x - 1, cur_y + 1] == 255)
+                //{
+                //    score++;
+                //    cur_x--;
+                //    cur_y++;
+                //    if (cur_x < o.min_x)
+                //        o.min_x = cur_x;
+                //    if (cur_y > o.max_y)
+                //        o.max_y = cur_y;
+
+                //    d[cur_x-1, cur_y] = 0;
+                //    d[cur_x, cur_y+1] = 0;
+                //}
                 // check left
                 else if (cur_x != 0 && d[cur_x - 1, cur_y] == 255)
                 {
@@ -760,36 +734,53 @@ namespace INFOIBV
                 }
 
                 // check top left
-                else if (cur_x > 0 && cur_y > 0 && d[cur_x - 1, cur_y - 1] == 255)
-                {
-                    score++;
-                    cur_x--;
-                    cur_y--;
-                    if (cur_x < o.min_x)
-                        o.min_x = cur_x;
-                    if (cur_y < o.min_y)
-                        o.min_y = cur_y;
-                }
+                //else if (cur_x > 0 && cur_y > 0 && d[cur_x - 1, cur_y - 1] == 255)
+                //{
+                //    score++;
+                //    cur_x--;
+                //    cur_y--;
+                //    if (cur_x < o.min_x)
+                //        o.min_x = cur_x;
+                //    if (cur_y < o.min_y)
+                //        o.min_y = cur_y;
+                //    d[cur_x - 1, cur_y] = 0;
+                //    d[cur_x, cur_y - 1] = 0;
+                //}
 
                 if (cur_score == score)
                     break;
             }
+            o.calc_area();
+            d = remove_noise(o, d);
             return new Tuple<double[,], Object>(d, o);
         }
 
-        public double[,] DrawObjects(double[,] d)
+        private double[,] remove_noise(Object o, double[,] d)
+        {
+            for(int x= o.min_x;x<=o.max_x;x++)
+            {
+                for(int y=o.min_y;y<=o.max_y;y++)
+                {
+                    if (d[x, y] == 255)
+                        d[x, y] = 0;
+                }
+            }
+            return d;
+        }
+
+        public Color[,] DrawObjects(Color[,] d)
         {
             foreach(Object o in objects)
             {
                 for(int x =o.min_x;x<=o.max_x;x++)
                 {
-                    d[x, o.min_y] = 100;
-                    d[x, o.max_y] = 100;
+                    d[x, o.min_y] = Color.Red;
+                    d[x, o.max_y] = Color.Red;
                 }
                 for(int y = o.min_y; y <= o.max_y; y++)
                 {
-                    d[o.min_x, y] = 100;
-                    d[o.max_x, y] = 100;
+                    d[o.min_x, y] = Color.Red;
+                    d[o.max_x, y] = Color.Red;
                 }
             }
             return d;
@@ -797,8 +788,8 @@ namespace INFOIBV
 
         public double[,] Opening(double[,] d, int amount)
         {
-            d = Erosion(d, 1, 1);
-            d = Dilation(d, 1, 1);
+            d = Erosion(d, 1);
+            d = Dilation(d, 1);
 
             if (amount > 1)
                 d = Opening(d, amount - 1);
@@ -819,7 +810,7 @@ namespace INFOIBV
 
         public void calc_area()
         {
-
+            area = (min_x + max_x) * (min_y + max_y);
         }
     }
 
