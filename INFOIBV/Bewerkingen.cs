@@ -8,7 +8,7 @@ namespace INFOIBV
 {
     class Bewerkingen
     {
-       public List<Object> objects = new List<Object>();
+        public List<Object> objects = new List<Object>();
         public Bewerkingen() { }
 
         public double[,] ToGray(Color[,] c)
@@ -236,29 +236,25 @@ namespace INFOIBV
 
                 }
             }
-            bool hasPixels = false;
-            while (!hasPixels)
+            int count = 0;
+            for (int x = min_x; x <= max_x; x++)
             {
-                for (int x = min_x; x <= max_x; x++)
+                for (int y = min_y; y < max_y; y++)
                 {
-                    for (int y = min_y; y < max_y; y++)
+                    if (output[x, y] == 255)
                     {
-                        if (output[x, y] == 255)
-                        {
-                            hasPixels = true;
-                            break;
-                        }
-
+                        count++;
                     }
-                    if (hasPixels)
-                        break;
                 }
             }
 
-            if (hasPixels)
-                output = ErosionPlus(output, o);
 
-            return output;
+            if (count > 1)
+                return ErosionPlus(output, o);
+            else if (count == 1)
+                return output;
+            else
+                return d;
         }
 
         public double[,] Middle(double[,] d)
@@ -661,7 +657,7 @@ namespace INFOIBV
 
         public void calc_area()
         {
-            area = (max_x-min_x) * (max_y-min_y);
+            area = (max_x - min_x) * (max_y - min_y);
             calc_isPlus();
         }
 

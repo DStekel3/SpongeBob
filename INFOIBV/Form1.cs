@@ -72,7 +72,7 @@ namespace INFOIBV
             
             b = bw.Perimeter(b);
 
-            a = bw.ErosionPlus(a, bw.objects[0]);
+            a = bw.Middle(bw.Inverse(a));
             
             Image = bw.ToColor(a);
             /*
