@@ -56,7 +56,7 @@ namespace INFOIBV
 
             return output;
         }
-        
+
         public Color[,] ToColor(double[,] d)
         {
             // Convert a double array to a Color array so the Image can be displayed
@@ -381,22 +381,6 @@ namespace INFOIBV
             return d;
         }
 
-        public Score FindSquares(double[,] d)
-        {
-            Score s = SquareTest(d);
-            return s;
-        }
-
-
-        public Tuple<int, int> HoughLine(double[,] d)
-        {
-            var r = Hough(d);
-            var t = GetMaximumHough(r);
-
-            return t;
-
-        }
-
         public Tuple<int, int> GetMaximumHough(double[,] r)
         {
             int max = 0;
@@ -416,207 +400,6 @@ namespace INFOIBV
             return new Tuple<int, int>(theta, rho);
         }
 
-        public double[,] My_Hough(double[,] d)
-        {
-            int w = d.GetLength(0);
-            int h = d.GetLength(1);
-
-            int rho_max = (int)Math.Floor(Math.Sqrt(w * w + h * h)) + 1;
-            int[,] accarray = new int[rho_max, 180];
-            double[] theta = new double[180];
-
-            double i = 0;
-            for (int index = 0; index < 180; index++)
-            {
-                theta[index] = i;
-                i += Math.PI / 180;
-            }
-
-            double rho;
-            int rho_int;
-            for (int n = 0; n < w; n++)
-            {
-                for (int m = 0; m < h; m++)
-                {
-                    if (d[n, m] == 255)
-                    {
-                        for (int k = 0; k < 180; k++)
-                        {
-                            rho = (m * Math.Cos(theta[k])) + (n * Math.Sin(theta[k]));
-                            rho_int = (int)Math.Round(rho / 2 + rho_max / 2);
-                            accarray[rho_int, k]++;
-                        }
-                    }
-                }
-            }
-
-            int amax = 0;
-            for (int x = 0; x < rho_max; x++)
-            {
-                for (int y = 0; y < 180; y++)
-                {
-                    if (accarray[x, y] > amax) amax = accarray[x, y];
-                }
-            }
-            double[,] res = new double[w, h];
-            int highest = 0;
-            int _x = -1;
-            int _y = -1;
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < 180; y++)
-                {
-                    int b = 0;
-                    if (amax != 0) b = (int)(((double)accarray[x, y] / (double)amax) * 255.0);
-                    res[x, y] = b;
-                    if (accarray[x, y] > highest)
-                    {
-                        highest = accarray[x, y];
-                        _x = x;
-                        _y = y;
-                    }
-                }
-            }
-            return res;
-
-        }
-
-        public double[,] Hough(double[,] d)
-        {
-            /* Perform Hough Line Transform on img */
-
-            /* the middle of img is made the origin */
-            int w = d.GetLength(0);
-            int h = d.GetLength(1);
-            double[,] res = new double[w, h];
-            double pmax = Math.Sqrt(((w / 2) * (w / 2)) + ((h / 2) * (h / 2)));
-            double tmax = Math.PI * 2;
-
-            // step sizes
-            double dp = pmax / (double)w;
-            double dt = tmax / (double)h;
-
-            int[,] A = new int[w, h]; // accumulator array
-
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    if (d[x, h - y - 1] == 255) // pixel is white - h-y flips incoming img
-                    {
-                        // book claims it's j = 1, i think it should be j = 0
-                        for (int j = 0; j < h; j++)
-                        {
-                            double row = ((double)(x - (w / 2)) * Math.Cos(dt * (double)j)) + ((double)(y - (h / 2)) * Math.Sin(dt * (double)j));
-                            // find index k of A closest to row
-                            int k = (int)((row / pmax) * w);
-                            if (k >= 0 && k < w) A[k, j]++;
-                        }
-                    }
-                }
-            }
-
-            // find max of A, to normalize colors
-            int amax = 0;
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    if (A[x, y] > amax) amax = A[x, y];
-                }
-            }
-
-            // make us a greyscale bitmap
-            int highest = 0;
-            int _x = -1;
-            int _y = -1;
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    int b = 0;
-                    if (amax != 0) b = (int)(((double)A[x, y] / (double)amax) * 255.0);
-                    res[x, y] = b;
-                    if (A[x, y] > highest)
-                    {
-                        highest = A[x, y];
-                        _x = x;
-                        _y = y;
-                    }
-                }
-            }
-            return res;
-            //return new Tuple<int,int>(_x, _y);
-        }
-
-        public Score SquareTest(double[,] z)
-        {
-            int w = z.GetLength(0);
-            int h = z.GetLength(1);
-
-            Score best = new Score(-1, -1, -1, -1, -1);
-
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    if (z[x, y] == 255)
-                    {
-                        //if pixel is white
-                        for (int n = 100; n <= 400; n++)
-                        {
-                            int width = n;
-                            int height = n;
-                            Score s = GetScoreSquare(z, x, y, width, height, 0.0);
-                            if (s == null)
-                                break;
-                            else if (s.score > 40 && s.score > best.score)
-                                best = s;
-                        }
-                    }
-                }
-            }
-            return best;
-        }
-
-        public Score GetScoreSquare(double[,] d, int x, int y, int w, int h, double angle)
-        {
-            int min_h = 50;
-            int min_w = 50;
-            int max_h = 400;
-            int max_w = 400;
-
-            if (x + w >= d.GetLength(0))
-                return null;
-            if (y + h >= d.GetLength(1))
-                return null;
-
-            int res = 0;
-            for (int a = x; a <= x + w; a++)
-            {
-                if (d[a, y] == 255)
-                    res += 2;
-                else
-                    res--;
-                if (d[a, y + h] == 255)
-                    res += 2;
-                else
-                    res--;
-            }
-            for (int b = y; b <= y + h; b++)
-            {
-                if (d[x, b] == 255)
-                    res += 2;
-                else
-                    res--;
-                if (d[x + w, b] == 255)
-                    res += 2;
-                else
-                    res--;
-            }
-            return new Score(x, y, w, h, res);
-        }
-
         public double ToRadians(int x)
         {
             return x / 180 * Math.PI;
@@ -632,17 +415,12 @@ namespace INFOIBV
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
-                        if(s.Item2.area > 30)
+                        if (s.Item2.area > 30)
                             objects.Add(s.Item2);
                     }
                 }
             }
             return d;
-        }
-
-        private void remove_noise(Object item2)
-        {
-            
         }
 
         private Tuple<double[,], Object> GetPerimeter(int x, int y, double[,] d)
@@ -750,16 +528,17 @@ namespace INFOIBV
                 if (cur_score == score)
                     break;
             }
+            o.perimeter = score;
             o.calc_area();
-            d = remove_noise(o, d);
+            //d = remove_noise(o, d);
             return new Tuple<double[,], Object>(d, o);
         }
 
         private double[,] remove_noise(Object o, double[,] d)
         {
-            for(int x= o.min_x;x<=o.max_x;x++)
+            for (int x = o.min_x; x <= o.max_x; x++)
             {
-                for(int y=o.min_y;y<=o.max_y;y++)
+                for (int y = o.min_y; y <= o.max_y; y++)
                 {
                     if (d[x, y] == 255)
                         d[x, y] = 0;
@@ -770,17 +549,20 @@ namespace INFOIBV
 
         public Color[,] DrawObjects(Color[,] d)
         {
-            foreach(Object o in objects)
+            foreach (Object o in objects)
             {
-                for(int x =o.min_x;x<=o.max_x;x++)
+                if (o.isPlus && o.area > 200)
                 {
-                    d[x, o.min_y] = Color.Red;
-                    d[x, o.max_y] = Color.Red;
-                }
-                for(int y = o.min_y; y <= o.max_y; y++)
-                {
-                    d[o.min_x, y] = Color.Red;
-                    d[o.max_x, y] = Color.Red;
+                    for (int x = o.min_x; x <= o.max_x; x++)
+                    {
+                        d[x, o.min_y] = Color.Red;
+                        d[x, o.max_y] = Color.Red;
+                    }
+                    for (int y = o.min_y; y <= o.max_y; y++)
+                    {
+                        d[o.min_x, y] = Color.Red;
+                        d[o.max_x, y] = Color.Red;
+                    }
                 }
             }
             return d;
@@ -801,6 +583,8 @@ namespace INFOIBV
     public class Object
     {
         public int min_x, max_x, min_y, max_y, area;
+        public double perimeter;
+        public bool isPlus = false;
 
         public Object(int a, int b)
         {
@@ -810,20 +594,20 @@ namespace INFOIBV
 
         public void calc_area()
         {
-            area = (min_x + max_x) * (min_y + max_y);
+            area = (max_x-min_x) * (max_y-min_y);
+            calc_isPlus();
         }
-    }
 
-    public class Score
-    {
-        public int x, y, w, h, score;
-        public Score(int _x, int _y, int _w, int _h, int _score)
+        public void calc_isPlus()
         {
-            x = _x;
-            y = _y;
-            w = _w;
-            h = _h;
-            score = _score;
+            int width = max_x - min_x;
+            int height = max_y - min_y;
+            if (Math.Abs(width - height) < 3)
+                isPlus = true;
+            else
+                isPlus = false;
         }
+
+
     }
 }

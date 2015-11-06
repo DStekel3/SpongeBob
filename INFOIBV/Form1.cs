@@ -65,7 +65,7 @@ namespace INFOIBV
             // TODO: include here your own code
             Bewerkingen bw = new Bewerkingen();
             double[,] a = bw.ToGray(Image);
-            a = bw.Inverse(a);
+            //a = bw.Inverse(a);
             a = bw.ToBinary(a, 150);
             a = bw.Opening(a, 2);
             a = bw.Edge(a);
