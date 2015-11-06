@@ -224,7 +224,7 @@ namespace INFOIBV
                     {
                         for (int j = -1; j <= 1; j++)
                         {
-                            if (d[x + i, y + j]*kernel[i,j] == 255)
+                            if (d[x + i, y + j] * kernel[i + 1, j + 1] == 255)
                                 totaal++;
                         }
                     }
@@ -488,9 +488,9 @@ namespace INFOIBV
 
         private bool Intersect(Object o, double[,] d)
         {
-            if (o.min_x == 0 
-                || o.max_x == d.GetLength(0) - 1 
-                || o.min_y == 0 
+            if (o.min_x == 0
+                || o.max_x == d.GetLength(0) - 1
+                || o.min_y == 0
                 || o.max_y == d.GetLength(1) - 1)
                 return true;
             return false;
@@ -624,7 +624,8 @@ namespace INFOIBV
         {
             foreach (Object o in objects)
             {
-                if (o.isPlus && o.area > 200)
+                o.calc_isMiddle(d);
+                if (o.isSquare && o.area > 200)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
                     {
@@ -657,7 +658,8 @@ namespace INFOIBV
     {
         public int min_x, max_x, min_y, max_y, area;
         public double perimeter;
-        public bool isPlus = false;
+        public bool isSquare = false;
+        public bool isMiddle = false;
 
         public Object(int a, int b)
         {
@@ -668,17 +670,39 @@ namespace INFOIBV
         public void calc_area()
         {
             area = (max_x - min_x) * (max_y - min_y);
-            calc_isPlus();
+            calc_isSquare();
         }
 
-        public void calc_isPlus()
+        public void calc_isSquare()
         {
             int width = max_x - min_x;
             int height = max_y - min_y;
             if (Math.Abs(width - height) < 3)
-                isPlus = true;
+                isSquare = true;
             else
-                isPlus = false;
+                isSquare = false;
+        }
+
+        public void calc_isMiddle(double[,] d)
+        {
+            for (int y = min_y; y <= max_y; y++)
+            {
+                for (int x = min_x; x <= max_x; x++)
+                {
+                    if (d[x, y] == 255)
+                    {
+                        int x_pos = x;
+                        int y_pos = y;
+                        if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 5)
+                        {
+                            if (Math.Abs(((max_y - min_y) / 2 + min_y) - y_pos) < 5)
+                            {
+                                isMiddle = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }
