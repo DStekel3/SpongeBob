@@ -354,10 +354,7 @@ namespace INFOIBV
             {
                 Parallel.For(0, a.GetLength(0), x =>
                 {
-                    if (a[x, y] == 0 || b[x, y] == 0)
-                        result[x, y] = 0;
-                    else
-                        result[x, y] = 255;
+                    result[x, y] = Math.Min(255, a[x, y] + b[x, y]);
                 });
             });
             return result;
