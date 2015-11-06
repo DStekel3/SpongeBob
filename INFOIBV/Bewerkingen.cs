@@ -781,7 +781,25 @@ namespace INFOIBV
                 if (cur_score == score)
                     break;
             }
-            return new Tuple<double[,], double>(d, o);
+            return new Tuple<double[,], Object>(d, o);
+        }
+
+        public double[,] DrawObjects(double[,] d)
+        {
+            foreach(Object o in objects)
+            {
+                for(int x =o.min_x;x<=o.max_x;x++)
+                {
+                    d[x, o.min_y] = 100;
+                    d[x, o.max_y] = 100;
+                }
+                for(int y = o.min_y; y <= o.max_y; y++)
+                {
+                    d[o.min_x, y] = 100;
+                    d[o.max_x, y] = 100;
+                }
+            }
+            return d;
         }
 
         public double[,] Opening(double[,] d, int amount)
@@ -798,11 +816,17 @@ namespace INFOIBV
 
     public class Object
     {
-        public int min_x, max_x, min_y, max_y;
+        public int min_x, max_x, min_y, max_y, area;
+
         public Object(int a, int b)
         {
             min_x = a; max_x = a;
             min_y = b; max_y = b;
+        }
+
+        public void calc_area()
+        {
+
         }
     }
 

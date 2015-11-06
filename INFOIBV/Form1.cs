@@ -69,6 +69,7 @@ namespace INFOIBV
             a = bw.ToBinary(a, 150);
             a = bw.Edge(a);
             a = bw.Perimeter(a);
+            a = bw.DrawObjects(a);
             //            a = bw.My_Hough(a);
             Image = bw.ToColor(a);
             /*
