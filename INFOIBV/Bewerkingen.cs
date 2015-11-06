@@ -220,11 +220,11 @@ namespace INFOIBV
                 {
                     int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 0
                                                             //Kernel 3x3
-                    for (int i = -1; i < 2; i++)
+                    for (int i = -1; i <= 1; i++)
                     {
-                        for (int j = -1; j < 2; j++)
+                        for (int j = -1; j <= 1; j++)
                         {
-                            if (d[x + i, y + j] == 255)
+                            if (d[x + i, y + j]*kernel[i,j] == 255)
                                 totaal++;
                         }
                     }
@@ -478,12 +478,22 @@ namespace INFOIBV
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
-                        if (s.Item2.area > 30)
+                        if (s.Item2.area > 30 && !Intersect(s.Item2, d))
                             objects.Add(s.Item2);
                     }
                 }
             }
             return d;
+        }
+
+        private bool Intersect(Object o, double[,] d)
+        {
+            if (o.min_x == 0 
+                || o.max_x == d.GetLength(0) - 1 
+                || o.min_y == 0 
+                || o.max_y == d.GetLength(1) - 1)
+                return true;
+            return false;
         }
 
         private Tuple<double[,], Object> GetPerimeter(int x, int y, double[,] d)
