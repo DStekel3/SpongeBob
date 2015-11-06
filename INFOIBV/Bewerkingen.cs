@@ -8,7 +8,7 @@ namespace INFOIBV
 {
     class Bewerkingen
     {
-        List<Object> objects = new List<Object>();
+       public List<Object> objects = new List<Object>();
         public Bewerkingen() { }
 
         public double[,] ToGray(Color[,] c)
@@ -196,6 +196,76 @@ namespace INFOIBV
             }
             if (amount > 1)
                 output = Erosion(output, amount - 1);
+
+            return output;
+        }
+
+
+        public double[,] ErosionPlus(double[,] d, Object o)
+        {
+            double[,] kernel = { { 0, 1, 0 }, { 1, 1, 1 }, { 0, 1, 0 } };
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+
+            int min_x = o.min_x;
+            int max_x = o.max_x;
+            int min_y = o.min_y;
+            int max_y = o.max_y;
+
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            for (int x = min_x; x <= max_x; x++)
+            {
+                for (int y = min_y; y < max_y; y++)
+                {
+                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 0
+                                                            //Kernel 3x3
+                    for (int i = -1; i < 2; i++)
+                    {
+                        for (int j = -1; j < 2; j++)
+                        {
+                            if (d[x + i, y + j] == 255)
+                                totaal++;
+                        }
+                    }
+
+                    if (totaal == 5)
+                        output[x, y] = 255;
+                    else
+                        output[x, y] = 0;
+
+                }
+            }
+            bool hasPixels = false;
+            while (!hasPixels)
+            {
+                for (int x = min_x; x <= max_x; x++)
+                {
+                    for (int y = min_y; y < max_y; y++)
+                    {
+                        if (output[x, y] == 255)
+                        {
+                            hasPixels = true;
+                            break;
+                        }
+
+                    }
+                    if (hasPixels)
+                        break;
+                }
+            }
+
+            if (hasPixels)
+                output = ErosionPlus(output, o);
+
+            return output;
+        }
+
+        public double[,] Middle(double[,] d)
+        {
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+            foreach (Object o in objects)
+                output = Add(output, ErosionPlus(d, o));
 
             return output;
         }
@@ -607,7 +677,6 @@ namespace INFOIBV
             else
                 isPlus = false;
         }
-
 
     }
 }
