@@ -174,9 +174,9 @@ namespace INFOIBV
             return result;
         }
 
-        public double[,] Dilation(double[,] d, int th, int amount)
+        public double[,] Dilation(double[,] d, int amount)
         {
-            // Dilate the double array depending on threshhold th, amount times
+            // Dilate the double array  amount times
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
@@ -186,8 +186,38 @@ namespace INFOIBV
             {
                 for (int y = 1; y < height - 1; y++)
                 {
-                    int totaal = 0;
-                    //Kernel 3x3
+                    if (d[x, y] == 255)
+                        //Kernel 3x3
+                        for (int i = -1; i < 2; i++)
+                        {
+                            for (int j = -1; j < 2; j++)
+                            {
+                                output[x + i, y + j] = 255;
+                            }
+                        }
+                }
+            }
+
+            if (amount > 1)
+                output = Dilation(output, amount - 1);
+            return output;
+        }
+
+
+        public double[,] Erosion(double[,] d, int amount)
+        {
+            // Erode the double array  amount times
+            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
+
+            int width = d.GetLength(0);
+            int height = d.GetLength(1);
+
+            for (int x = 1; x < width - 1; x++)
+            {
+                for (int y = 1; y < height - 1; y++)
+                {
+                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 0
+                                                            //Kernel 3x3
                     for (int i = -1; i < 2; i++)
                     {
                         for (int j = -1; j < 2; j++)
@@ -197,56 +227,19 @@ namespace INFOIBV
                         }
                     }
 
-                    if (totaal < th)
+                    if (totaal >= 9)
+                        output[x, y] = 255;
+                    else
                         output[x, y] = 0;
-                    else
-                        output[x, y] = 255;
-                }
-            }
-
-            if (amount > 1)
-                output = Dilation(output, th, amount - 1);
-            return output;
-        }
-
-
-        public double[,] Erosion(double[,] d, int th, int amount)
-        {
-            // Erode the double array depending on threshhold th, amount times
-            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
-
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-
-            for (int x = 0; x < width - 1; x++)
-            {
-                for (int y = 0; y < height - 1; y++)
-                {
-                    int totaal = 0;                         //The total number of pixels in the picture covered by the kernel that are 255
-                    if (x != 0 && x != width - 1 && y != 0 && y != height - 1)
-                    {
-                        //Kernel 3x3
-                        for (int i = -1; i < 2; i++)
-                        {
-                            for (int j = -1; j < 2; j++)
-                            {
-                                if (d[x + i, y + j] == 255)
-                                    totaal++;
-                            }
-                        }
-                    }
-                    if (totaal > th)
-                        output[x, y] = 255;
-                    else
-                        output[x, y] = d[x, y];
 
                 }
             }
             if (amount > 1)
-                output = Erosion(output, th, amount - 1);
+                output = Erosion(output, amount - 1);
 
             return output;
         }
+
 
         public double[,] ColorFilter(Color[,] d)
         {
