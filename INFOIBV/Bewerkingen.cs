@@ -419,14 +419,6 @@ namespace INFOIBV
         public double[,] HoughLine(double[,] d)
         {
             var t = Hough(d);
-            int dist = t.Item1;
-            int o = t.Item2;
-            int x = d.GetLength(0) / 2;
-            int y = d.GetLength(1) / 2;
-            x+= (int)Math.Cos(o) * dist;
-            y+= (int)Math.Sin(o) * dist;
-
-            o = (int)o - Math.PI / 2;
             return d;
 
         }
