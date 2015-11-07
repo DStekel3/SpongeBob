@@ -8,6 +8,7 @@ namespace INFOIBV
 {
     class Bewerkingen
     {
+        List<Tuple<double, int, int>> scores = new List<Tuple<double, int, int>>();
         public Bewerkingen() { }
 
         public double[,] ToGray(Color[,] c)
@@ -676,15 +677,14 @@ namespace INFOIBV
                 {
                     if(d[x,y] == 255)
                     {
-                        var s = GetPerimeter(x, y, d);
-                        d = s.Item1;
+                        d = GetPerimeter(x, y, d);
                     }
                 }
             }
             return d;
         }
 
-        private Tuple<double[,], double> GetPerimeter(int x, int y, double[,] d)
+        private double[,] GetPerimeter(int x, int y, double[,] d)
         {
             int max_x = d.GetLength(0)-1;
             int max_y = d.GetLength(1)-1;
@@ -726,7 +726,9 @@ namespace INFOIBV
                 if (cur_score == score)
                     break;
             }
-            return new Tuple<double[,], double>(d, score);
+            if (score > 60)
+                scores.Add(new Tuple<double, int,int>(score,x, y));
+            return d;
         }
 
         public double[,] Opening(double[,] d, int amount)
