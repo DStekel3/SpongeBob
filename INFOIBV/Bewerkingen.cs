@@ -607,7 +607,7 @@ namespace INFOIBV
             foreach (Object o in objects)
             {
                 o.calc_isMiddle(ToGray(d));
-                if (o.isSquare && o.area > 200 )//&& o.isMiddle)
+                if (o.isSquare && o.area > 200 && o.isMiddle)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
                     {
