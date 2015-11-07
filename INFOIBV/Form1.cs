@@ -74,7 +74,7 @@ namespace INFOIBV
             ed = bw.Perimeter(ed);                      //Find the objects and their perimeters in b. These will be stored in an object list in Bewerkingen bw
             a = bw.Middle(a);                           //For each object in the objects list, calculate it's middle points
                                                         //If the boundingbox is rectangular and the middlepoint is in the center of the box and the object has the right area size display it
-            Image = bw.ToColor(a);                      //Overwrite the image, ready to be displayed
+            Image = bw.ToColor(ed);                      //Overwrite the image, ready to be displayed
             //==========================================================================================
 
             // Copy array to output Bitmap
