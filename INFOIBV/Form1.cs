@@ -68,11 +68,11 @@ namespace INFOIBV
             a = bw.ToBinary(a, 150);
             a = bw.Opening(a, 2);
             
-            //double[,] b = bw.Edge(a);
+            double[,] b = bw.Edge(a);
             
-            //b = bw.Perimeter(b);
+            b = bw.Perimeter(b);
 
-            //a = bw.Middle(bw.Inverse(a));
+            a = bw.Middle(bw.Inverse(a));
             
             Image = bw.ToColor(a);
             /*

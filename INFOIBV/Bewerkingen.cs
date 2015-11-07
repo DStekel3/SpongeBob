@@ -443,30 +443,7 @@ namespace INFOIBV
 
             return d;
         }
-
-        public Tuple<int, int> GetMaximumHough(double[,] r)
-        {
-            int max = 0;
-            int rho = -1;
-            int theta = -1;
-            for (int t = 0; t < r.GetLength(0); t++)
-            {
-                for (int u = 0; u < r.GetLength(1); u++)
-                {
-                    if (r[t, u] > max)
-                    {
-                        theta = u;
-                        rho = t;
-                    }
-                }
-            }
-            return new Tuple<int, int>(theta, rho);
-        }
-
-        public double ToRadians(int x)
-        {
-            return x / 180 * Math.PI;
-        }
+                
 
         public double[,] Perimeter(double[,] d)
         {
@@ -624,7 +601,7 @@ namespace INFOIBV
         {
             foreach (Object o in objects)
             {
-                o.calc_isMiddle(d);
+                o.calc_isMiddle(ToGray(d));
                 if (o.isSquare && o.area > 200)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
