@@ -25,7 +25,6 @@ namespace INFOIBV
                 {
                     Color pixelColor = c[x, y];
                     int avg = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.5 + pixelColor.B * 0.2);
-                    //           int avg = (pixelColor.R + pixelColor.G + pixelColor.B)/3;
 
                     if (avg > 255)
                         avg = 255;
@@ -203,6 +202,7 @@ namespace INFOIBV
 
         public double[,] ErosionPlus(double[,] d, Object o)
         {
+            // Perform erosion with a 3x3 "+" kernel until the next erosion would completely remove the object. This will thin objects and find their middle points
             double[,] kernel = { { 0, 1, 0 }, { 1, 1, 1 }, { 0, 1, 0 } };
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
@@ -259,6 +259,7 @@ namespace INFOIBV
 
         public double[,] Middle(double[,] d)
         {
+            //Outputs an image with for each object found, only it's middle point and its bounding box
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
             foreach (Object o in objects)
                 output = Add(output, ErosionPlus(d, o));
@@ -295,6 +296,7 @@ namespace INFOIBV
             int width = d.GetLength(0);
             int height = d.GetLength(1);
 
+            //using a kernel for vertical edges and a kernel for horizontal edges
             double[,] kernely = { { -1, -3, -1 }, { 0, 0, 0 }, { 1, 3, 1 } };
             double[,] kernelx = { { -1, 0, 1 }, { -3, 0, 3 }, { -1, 0, 1 } };
 
@@ -358,7 +360,7 @@ namespace INFOIBV
 
         public double[,] Inverse(double[,] d)
         {
-            // calculates the inverse of given image
+            // calculates the inverse of given image d
             double[,] result = new double[d.GetLength(0), d.GetLength(1)];
             Parallel.For(0, d.GetLength(1), y =>
             {
@@ -372,7 +374,7 @@ namespace INFOIBV
 
         public double[,] Smooth(double[,] d, int amount)
         {
-            // Smooth
+            // Smoothen the image d, amount times
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
@@ -404,7 +406,7 @@ namespace INFOIBV
 
         public double[,] Sharp(double[,] d)
         {
-            // Smooth
+            //Sharpen the image d, amount times
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
 
             int width = d.GetLength(0);
@@ -435,6 +437,7 @@ namespace INFOIBV
 
         public double[,] Closing(double[,] d, int amount)
         {
+            //Performs a closing, amount times
             d = Dilation(d, 1);
             d = Erosion(d, 1);
 
@@ -447,6 +450,7 @@ namespace INFOIBV
 
         public double[,] Perimeter(double[,] d)
         {
+            //Seeks objects and calculates the perimeter
             for (int y = 0; y < d.GetLength(1); y++)
             {
                 for (int x = 0; x < d.GetLength(0); x++)
@@ -599,10 +603,11 @@ namespace INFOIBV
 
         public Color[,] DrawObjects(Color[,] d)
         {
+            //Draws found objects
             foreach (Object o in objects)
             {
                 o.calc_isMiddle(ToGray(d));
-                if (o.isSquare && o.area > 200)
+                if (o.isSquare && o.area > 200 && o.isMiddle)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
                     {
@@ -621,6 +626,7 @@ namespace INFOIBV
 
         public double[,] Opening(double[,] d, int amount)
         {
+            //performs an opening on d amount times
             d = Erosion(d, 1);
             d = Dilation(d, 1);
 
@@ -652,6 +658,7 @@ namespace INFOIBV
 
         public void calc_isSquare()
         {
+            //check wether the boundingbox is square
             int width = max_x - min_x;
             int height = max_y - min_y;
             if (Math.Abs(width - height) < 3)
@@ -662,12 +669,14 @@ namespace INFOIBV
 
         public void calc_isMiddle(double[,] d)
         {
+            int count = 0;
             for (int y = min_y; y <= max_y; y++)
             {
                 for (int x = min_x; x <= max_x; x++)
                 {
                     if (d[x, y] == 255)
                     {
+                        count++;
                         int x_pos = x;
                         int y_pos = y;
                         if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 5)
@@ -677,9 +686,12 @@ namespace INFOIBV
                                 isMiddle = true;
                             }
                         }
+                       
                     }
                 }
             }
+            if (count > 2)
+                isMiddle = false;
         }
 
     }
