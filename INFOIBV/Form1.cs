@@ -68,7 +68,7 @@ namespace INFOIBV
             double[,] a = bw.ToGray(Image);             //Convert the image to a grayscale image and store it in a double[,] array a
             
             a = bw.ToBinary(a, 150);                    //Convert the image a to a binary image
-            //a = bw.Opening(a, 2);                       //Perform openings on image a
+            a = bw.Opening(a, 1);                       //Perform openings on image a
             
             double[,] ed = bw.Edge(a);                  //Find the edges of the image and put them in a different double[,] array b 
             ed = bw.Perimeter(ed);                      //Find the objects and their perimeters in b. These will be stored in an object list in Bewerkingen bw

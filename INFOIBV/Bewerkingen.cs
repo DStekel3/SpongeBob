@@ -459,7 +459,7 @@ namespace INFOIBV
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
-                        if (s.Item2.area > 30 && !Intersect(s.Item2, d))
+                        if (s.Item2.area > 30 && !Intersect(s.Item2, d)) // add object with area > 30 and don't intersect with the boundaries of the image
                             objects.Add(s.Item2);
                     }
                 }
@@ -479,16 +479,22 @@ namespace INFOIBV
 
         private Tuple<double[,], Object> GetPerimeter(int x, int y, double[,] d)
         {
-            int max_x = d.GetLength(0) - 1;
-            int max_y = d.GetLength(1) - 1;
-            int cur_x = x;
-            int cur_y = y;
-            double score = 0;
+            // calculates the perimeter of a certain object by measuring the length of object boundary (calculating the length of it's edge).
+            // we exclude diagonal steps, so we use city block distance
+            // when we're done with a pixel, we set it's value to 0, to avoid using this pixel again in our calculation.
+            // returns resulting double[,] array and object.
+
+            int max_x = d.GetLength(0) - 1; // max x-position of the image
+            int max_y = d.GetLength(1) - 1; // max y-position of the image
+            int cur_x = x; // current x-position used for calculation
+            int cur_y = y; // current y-position used for calculation
+            double score = 0; // length of perimeter
             Object o = new Object(x, y);
             while (!(cur_x == x && cur_y == y && score > 0))
             {
                 double cur_score = score;
                 d[cur_x, cur_y] = 0;
+
                 //  check top
                 if (cur_y != 0 && d[cur_x, cur_y - 1] == 255)
                 {
@@ -528,7 +534,7 @@ namespace INFOIBV
                     break;
             }
             o.perimeter = score;
-            o.calc_area();
+            o.calc_properties(); // calculate certain properties of the object
             return new Tuple<double[,], Object>(d, o);
         }
 
@@ -582,12 +588,11 @@ namespace INFOIBV
             min_y = b; max_y = b;
         }
 
-        public void calc_area()
+        public void calc_properties()
         {
-            // calculates the area of the surrounding bounding box of the object
-            area = (max_x - min_x) * (max_y - min_y);
-            calc_isSquare();
-            calc_isPerim();
+            area = (max_x - min_x) * (max_y - min_y); // calculates the area of the surrounding bounding box of the object
+            calc_isSquare(); // checks if the bounding box is a square 
+            calc_isPerim(); // checks if the perimeter of the object == perimeter of the bounding box
         }
 
         public void calc_isSquare()
@@ -603,6 +608,8 @@ namespace INFOIBV
 
         public void calc_isPerim()
         {
+            // checks if the perimeter of the object is equal to the perimeter of the bounding box
+            // for plus-signs the difference between these should be very low
             if (Math.Abs((perimeter / 1) - (2*(max_x- min_x)+(2*(max_y- min_y)))) < 20)
                 Perim = true;
             else
@@ -611,6 +618,9 @@ namespace INFOIBV
 
         public void calc_isMiddle(double[,] d)
         {
+            // after using ErosionPlus, where we use erosion on the object until it's almost gone, 
+            // we check the pixels left in the image. 
+            // For a plus-sign these pixels should be in the middle of the object-area.
             int count = 0;
             for (int y = min_y; y <= max_y; y++)
             {
@@ -621,9 +631,9 @@ namespace INFOIBV
                         count++;
                         int x_pos = x;
                         int y_pos = y;
-                        if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 2)
+                        if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 2) // diff between middle-point(x-) and the location of the pixel
                         {
-                            if (Math.Abs(((max_y - min_y) / 2 + min_y) - y_pos) < 2)
+                            if (Math.Abs(((max_y - min_y) / 2 + min_y) - y_pos) < 2) // diff between middle-point(y) and the location of the pixel
                             {
                                 isMiddle = true;
                             }
@@ -632,7 +642,7 @@ namespace INFOIBV
                     }
                 }
             }
-            if (count > 4)
+            if (count > 4) // if more than given amount of pixels is left in the image, we decide the object isn't a plus-sign. For plus-signs, the pixels left should be very low.
                 isMiddle = false;
         }
 
