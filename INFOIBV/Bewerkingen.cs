@@ -9,7 +9,6 @@ namespace INFOIBV
     class Bewerkingen
     {
         public List<Object> objects = new List<Object>();
-        public Bewerkingen() { }
 
         public double[,] ToGray(Color[,] c)
         {
@@ -71,66 +70,16 @@ namespace INFOIBV
                     c[x, y] = newColor;
                 }
             }
+            foreach(Object o in objects)
+                o.calc_isMiddle(d);
             c = DrawObjects(c);
             return c;
         }
 
-        public double[,] DoubleThresHold(double[,] d, int l, int u)
+        public Color[,] DrawResult(Color[,] d)
         {
-            // Convert a greyscale image to a binary image depending on threshhold th
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-
-            double lower = l;
-            double upper = u;
-
-            double[,] output = new double[width, height];
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    if (d[x, y] >= lower && d[x, y] <= upper)
-                        output[x, y] = 255;
-                }
-            }
-
-            return output;
-        }
-
-        public double[,] BinaryMedian(double[,] d)
-        {
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-            double[,] result = new double[width, height];
-
-            int[,] median = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
-            List<double> vals = new List<double>();
-
-            Parallel.For(1, height - 1, y =>
-              {
-                  Parallel.For(1, width - 1, x =>
-                  {
-                      int black = 0;
-                      int white = 0;
-                      for (int u = -1; u <= 1; u++)
-                      {
-                          for (int v = -1; v <= 1; v++)
-                          {
-                              if (d[x + u, y + v] == 0)
-                                  black++;
-                              else
-                                  white++;
-                          }
-                          if (black > white)
-                              result[x, y] = 0;
-                          else
-                              result[x, y] = 255;
-                      }
-                  });
-              });
-
-            return result;
+            d = DrawObjects(d);
+            return d;
         }
 
         public double[,] Dilation(double[,] d, int amount)
@@ -161,7 +110,6 @@ namespace INFOIBV
                 output = Dilation(output, amount - 1);
             return output;
         }
-
 
         public double[,] Erosion(double[,] d, int amount)
         {
@@ -198,7 +146,6 @@ namespace INFOIBV
 
             return output;
         }
-
 
         public double[,] ErosionPlus(double[,] d, Object o)
         {
@@ -266,28 +213,7 @@ namespace INFOIBV
 
             return output;
         }
-
-
-        public double[,] ColorFilter(Color[,] d)
-        {
-            int w = d.GetLength(0);
-            int h = d.GetLength(1);
-
-            double[,] res = new double[w, h];
-            for (int x = 0; x < w; x++)
-            {
-                for (int y = 0; y < h; y++)
-                {
-                    Color z = d[x, y];
-                    if (z.R >= 70 && z.R <= 140 &&
-                        z.G >= 90 && z.G <= 130 &&
-                        z.B >= 0 && z.B <= 50)
-                        res[x, y] = 255;
-                }
-            }
-            return res;
-        }
-
+        
         public double[,] Edge(double[,] d)
         {
             // Get the edges
@@ -325,24 +251,6 @@ namespace INFOIBV
             return output;
         }
 
-        public double[,] Subtract(double[,] a, double[,] b)
-        {
-            // when images have on position (x,y) both a black pixel, this will become white
-            // the other pixels will stay the same as in image a.
-            double[,] result = new double[a.GetLength(0), a.GetLength(1)];
-            Parallel.For(0, a.GetLength(1), y =>
-            {
-                Parallel.For(0, a.GetLength(0), x =>
-                {
-                    if (a[x, y] == 0 && a[x, y] == b[x, y])
-                        result[x, y] = 255;
-                    else
-                        result[x, y] = a[x, y];
-                });
-            });
-            return result;
-        }
-
         public double[,] Add(double[,] a, double[,] b)
         {
             // when at least one of the images has a black pixel on (x,y), this will become black,
@@ -372,82 +280,6 @@ namespace INFOIBV
             return result;
         }
 
-        public double[,] Smooth(double[,] d, int amount)
-        {
-            // Smoothen the image d, amount times
-            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
-
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-
-            double[,] kernel = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-
-            Parallel.For(1, width - 1, x =>
-              {
-                  Parallel.For(1, height - 1, y =>
-                  {
-                      double val = 0;
-                      for (int i = 0; i < 3; i++)
-                      {
-                          for (int j = 0; j < 3; j++)
-                          {
-                              val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]) / 16;
-
-                          }
-                      }
-
-                      output[x, y] = val;
-                  });
-              });
-            if (amount > 1)
-                output = Smooth(output, amount - 1);
-            return output;
-        }
-
-        public double[,] Sharp(double[,] d)
-        {
-            //Sharpen the image d, amount times
-            double[,] output = new double[d.GetLength(0), d.GetLength(1)];
-
-            int width = d.GetLength(0);
-            int height = d.GetLength(1);
-
-            double[,] kernel = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, 1, -1 } };
-
-            Parallel.For(1, width - 1, x =>
-            {
-                Parallel.For(1, height - 1, y =>
-                {
-                    double val = 0;
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            val += (kernel[i, j] * d[-1 + i + x, -1 + j + y]);
-
-                        }
-                    }
-
-                    output[x, y] = val;
-                });
-            });
-            return output;
-        }
-
-        public double[,] Closing(double[,] d, int amount)
-        {
-            //Performs a closing, amount times
-            d = Dilation(d, 1);
-            d = Erosion(d, 1);
-
-            if (amount > 1)
-                d = Closing(d, amount - 1);
-
-            return d;
-        }
-                
-
         public double[,] Perimeter(double[,] d)
         {
             //Seeks objects and calculates the perimeter
@@ -459,8 +291,9 @@ namespace INFOIBV
                     {
                         var s = GetPerimeter(x, y, d);
                         d = s.Item1;
-                        if (s.Item2.area > 30 && !Intersect(s.Item2, d)) // add object with area > 30 and don't intersect with the boundaries of the image
-                            objects.Add(s.Item2);
+                        Object o = s.Item2;
+                        if (o.area > 30 && !Intersect(o, d)) // add object with area > 30 and don't intersect with the boundaries of the image
+                            objects.Add(o);
                     }
                 }
             }
@@ -469,6 +302,7 @@ namespace INFOIBV
 
         private bool Intersect(Object o, double[,] d)
         {
+            // checks if object intersects with the boundaries of the image
             if (o.min_x == 0
                 || o.max_x == d.GetLength(0) - 1
                 || o.min_y == 0
@@ -543,7 +377,6 @@ namespace INFOIBV
             //Draws found objects
             foreach (Object o in objects)
             {
-                o.calc_isMiddle(ToGray(d));
                 if (o.isSquare && o.area > 400 && o.isMiddle && o.Perim)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
