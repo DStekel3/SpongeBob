@@ -66,13 +66,13 @@ namespace INFOIBV
 
             Bewerkingen bw = new Bewerkingen();         //Bewerkingen is where the magic happens
             double[,] a = bw.ToGray(Image);             //Convert the image to a grayscale image and store it in a double[,] array a
-            //a = bw.Smooth(a, 1);
+            
             a = bw.ToBinary(a, 150);                    //Convert the image a to a binary image
-            a = bw.Opening(a, 2);                       //Perform openings on image a
+            //a = bw.Opening(a, 2);                       //Perform openings on image a
             
             double[,] ed = bw.Edge(a);                  //Find the edges of the image and put them in a different double[,] array b 
             ed = bw.Perimeter(ed);                      //Find the objects and their perimeters in b. These will be stored in an object list in Bewerkingen bw
-            //a = bw.Inverse(a);
+            a = bw.Inverse(a);
             a = bw.Middle(a);                           //For each object in the objects list, calculate it's middle points
                                                         //If the boundingbox is rectangular and the middlepoint is in the center of the box and the object has the right area size display it
             Image = bw.ToColor(a);                      //Overwrite the image, ready to be displayed

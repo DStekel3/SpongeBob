@@ -498,19 +498,6 @@ namespace INFOIBV
                         o.min_y = cur_y;
                 }
 
-                // check top right
-                //else if (cur_y != 0 && x < max_x && d[cur_x + 1, cur_y - 1] == 255)
-                //{
-                //    score++;
-                //    cur_x++;
-                //    cur_y--;
-                //    if (cur_x > o.max_x)
-                //        o.max_x = cur_x;
-                //    if (cur_y < o.min_y)
-                //        o.min_y = cur_y;
-                //    d[cur_x+1, cur_y-1] = 0;
-                //    d[cur_x, cur_y-1] = 0;
-                //}
                 // check right
                 else if (cur_x != max_x && d[cur_x + 1, cur_y] == 255)
                 {
@@ -519,21 +506,6 @@ namespace INFOIBV
                     if (cur_x > o.max_x)
                         o.max_x = cur_x;
                 }
-
-                // check bottom right
-                //else if (cur_x < max_x && cur_y < max_y && d[cur_x + 1, cur_y + 1] == 255)
-                //{
-                //    score++;
-                //    cur_x++;
-                //    cur_y++;
-                //    if (cur_x > o.max_x)
-                //        o.max_x = cur_x;
-                //    if (cur_y < o.min_y)
-                //        o.min_y = cur_y;
-
-                //    d[cur_x+1, cur_y] = 0;
-                //    d[cur_x, cur_y+1] = 0;
-                //}
                 // check bottom
                 else if (cur_y != max_y && d[cur_x, cur_y + 1] == 255)
                 {
@@ -542,20 +514,7 @@ namespace INFOIBV
                     if (cur_y > o.max_y)
                         o.max_y = cur_y;
                 }
-                // check bottom left
-                //else if (cur_x > 0 && cur_y < max_y && d[cur_x - 1, cur_y + 1] == 255)
-                //{
-                //    score++;
-                //    cur_x--;
-                //    cur_y++;
-                //    if (cur_x < o.min_x)
-                //        o.min_x = cur_x;
-                //    if (cur_y > o.max_y)
-                //        o.max_y = cur_y;
 
-                //    d[cur_x-1, cur_y] = 0;
-                //    d[cur_x, cur_y+1] = 0;
-                //}
                 // check left
                 else if (cur_x != 0 && d[cur_x - 1, cur_y] == 255)
                 {
@@ -565,40 +524,12 @@ namespace INFOIBV
                         o.min_x = cur_x;
                 }
 
-                // check top left
-                //else if (cur_x > 0 && cur_y > 0 && d[cur_x - 1, cur_y - 1] == 255)
-                //{
-                //    score++;
-                //    cur_x--;
-                //    cur_y--;
-                //    if (cur_x < o.min_x)
-                //        o.min_x = cur_x;
-                //    if (cur_y < o.min_y)
-                //        o.min_y = cur_y;
-                //    d[cur_x - 1, cur_y] = 0;
-                //    d[cur_x, cur_y - 1] = 0;
-                //}
-
                 if (cur_score == score)
                     break;
             }
             o.perimeter = score;
             o.calc_area();
-            //d = remove_noise(o, d);
             return new Tuple<double[,], Object>(d, o);
-        }
-
-        private double[,] remove_noise(Object o, double[,] d)
-        {
-            for (int x = o.min_x; x <= o.max_x; x++)
-            {
-                for (int y = o.min_y; y <= o.max_y; y++)
-                {
-                    if (d[x, y] == 255)
-                        d[x, y] = 0;
-                }
-            }
-            return d;
         }
 
         public Color[,] DrawObjects(Color[,] d)
@@ -607,7 +538,7 @@ namespace INFOIBV
             foreach (Object o in objects)
             {
                 o.calc_isMiddle(ToGray(d));
-                if (o.isSquare && o.area > 200 && o.isMiddle)
+                if (o.isSquare && o.area > 400 && o.isMiddle && o.Perim)
                 {
                     for (int x = o.min_x; x <= o.max_x; x++)
                     {
@@ -643,6 +574,7 @@ namespace INFOIBV
         public double perimeter;
         public bool isSquare = false;
         public bool isMiddle = false;
+        public bool Perim = false;
 
         public Object(int a, int b)
         {
@@ -652,19 +584,29 @@ namespace INFOIBV
 
         public void calc_area()
         {
+            // calculates the area of the surrounding bounding box of the object
             area = (max_x - min_x) * (max_y - min_y);
             calc_isSquare();
+            calc_isPerim();
         }
 
         public void calc_isSquare()
         {
-            //check wether the boundingbox is square
+            //check whether the boundingbox is square
             int width = max_x - min_x;
             int height = max_y - min_y;
-            if (Math.Abs(width - height) < 3)
+            if (Math.Abs(width - height) < 10)
                 isSquare = true;
             else
                 isSquare = false;
+        }
+
+        public void calc_isPerim()
+        {
+            if (Math.Abs((perimeter / 1) - (2*(max_x- min_x)+(2*(max_y- min_y)))) < 20)
+                Perim = true;
+            else
+                Perim = false;
         }
 
         public void calc_isMiddle(double[,] d)
@@ -679,9 +621,9 @@ namespace INFOIBV
                         count++;
                         int x_pos = x;
                         int y_pos = y;
-                        if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 5)
+                        if (Math.Abs(((max_x - min_x) / 2 + min_x) - x_pos) < 2)
                         {
-                            if (Math.Abs(((max_y - min_y) / 2 + min_y) - y_pos) < 5)
+                            if (Math.Abs(((max_y - min_y) / 2 + min_y) - y_pos) < 2)
                             {
                                 isMiddle = true;
                             }
@@ -690,7 +632,7 @@ namespace INFOIBV
                     }
                 }
             }
-            if (count > 3)
+            if (count > 4)
                 isMiddle = false;
         }
 
