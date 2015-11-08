@@ -75,7 +75,7 @@ namespace INFOIBV
             a = bw.Inverse(a);
             a = bw.Middle(a);                           //For each object in the objects list, calculate it's middle points
                                                         //If the boundingbox is rectangular and the middlepoint is in the center of the box and the object has the right area size display it
-            Image = bw.ToColor(a);                      //Overwrite the image, ready to be displayed
+            Image = bw.DrawResult(Image);                      //Overwrite the image, ready to be displayed
             //==========================================================================================
 
             // Copy array to output Bitmap

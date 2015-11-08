@@ -70,8 +70,6 @@ namespace INFOIBV
                     c[x, y] = newColor;
                 }
             }
-            foreach(Object o in objects)
-                o.calc_isMiddle(d);
             c = DrawObjects(c);
             return c;
         }
@@ -209,7 +207,10 @@ namespace INFOIBV
             //Outputs an image with for each object found, only it's middle point and its bounding box
             double[,] output = new double[d.GetLength(0), d.GetLength(1)];
             foreach (Object o in objects)
+            {
                 output = Add(output, ErosionPlus(d, o));
+                o.calc_isMiddle(output);
+            }
 
             return output;
         }
