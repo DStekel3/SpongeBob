@@ -63,33 +63,19 @@ namespace INFOIBV
 
             //==========================================================================================
             // TODO: include here your own code
-            Bewerkingen bw = new Bewerkingen();
-            double[,] a = bw.ToGray(Image);
-            a = bw.ToBinary(a, 150);
-            a = bw.Opening(a, 2);
-            
-            //double[,] b = bw.Edge(a);
-            
-            //b = bw.Perimeter(b);
 
-            //a = bw.Middle(bw.Inverse(a));
+            Bewerkingen bw = new Bewerkingen();         //Bewerkingen is where the magic happens
+            double[,] a = bw.ToGray(Image);             //Convert the image to a grayscale image and store it in a double[,] array a
             
-            Image = bw.ToColor(a);
-            /*
-            double cur_x = a.GetLength(0) / 2;
-            double cur_y = a.GetLength(1) / 2;
-            double radian = Math.PI / 180;
-            for(int z = 0; z < t.Item1;z++)
-            {
-                cur_x += Math.Cos(radian * t.Item2);
-                cur_y += Math.Sin(radian * t.Item2);
-                try { a[(int)Math.Round(cur_x), (int)Math.Round(cur_y)] = 255; }
-                catch(IndexOutOfRangeException) { break; }
-            }
-
-            Image = bw.ToColor(a);
-            */
-
+            a = bw.ToBinary(a, 150);                    //Convert the image a to a binary image
+            //a = bw.Opening(a, 1);                       //Perform openings on image a
+            
+            double[,] ed = bw.Edge(a);                  //Find the edges of the image and put them in a different double[,] array b 
+            ed = bw.Perimeter(ed);                      //Find the objects and their perimeters in b. These will be stored in an object list in Bewerkingen bw
+            a = bw.Inverse(a);
+            a = bw.Middle(a);                           //For each object in the objects list, calculate it's middle points
+                                                        //If the boundingbox is rectangular and the middlepoint is in the center of the box and the object has the right area size display it
+            Image = bw.DrawResult(Image);                      //Overwrite the image, ready to be displayed
             //==========================================================================================
 
             // Copy array to output Bitmap

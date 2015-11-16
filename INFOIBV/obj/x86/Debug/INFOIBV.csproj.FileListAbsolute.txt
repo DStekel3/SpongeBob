@@ -22,13 +22,6 @@ D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.Gen
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
 D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Imaging.dll
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.dll
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Math.dll
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Imaging.xml
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.pdb
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.xml
-D:\Users\Daniël\Source\Repos\SpongeBob\INFOIBV\bin\Debug\AForge.Math.xml
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.exe
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.pdb
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
@@ -37,3 +30,11 @@ C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.Propertie
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
 C:\Users\Daan\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
+D:\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.exe
+D:\Documents\GitHub\SpongeBob\INFOIBV\bin\Debug\INFOIBV.pdb
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.INFOIBV.resources
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.Properties.Resources.resources
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.exe
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.pdb
+D:\Documents\GitHub\SpongeBob\INFOIBV\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
